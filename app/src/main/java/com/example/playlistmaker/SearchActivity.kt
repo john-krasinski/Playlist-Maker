@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
@@ -26,9 +27,16 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
+        val backButton = findViewById<View>(R.id.btnBackFromSearch)
 //        val linearLayout = findViewById<LinearLayout>(R.id.container)
         val inputEditText = findViewById<EditText>(R.id.searchBox)
         val clearButton = findViewById<ImageView>(R.id.searchBoxClearIcon)
+
+        backButton.setOnClickListener {
+            val goBackIntent = Intent(this, MainActivity::class.java)
+            startActivity(goBackIntent)
+            finish()
+        }
 
         clearButton.setOnClickListener {
             inputEditText.setText("")

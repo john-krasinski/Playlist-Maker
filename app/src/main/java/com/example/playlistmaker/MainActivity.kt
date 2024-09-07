@@ -24,12 +24,14 @@ class MainActivity : AppCompatActivity() {
         val btnSearch = findViewById<Button>(R.id.btnSearch)
         btnSearch.setOnClickListener {
             val goSearchIntent = Intent(this, SearchActivity::class.java)
+            goSearchIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(goSearchIntent)
         }
 
         val btnMediaLibrary = findViewById<Button>(R.id.btnMediaLibrary)
         btnMediaLibrary.setOnClickListener {
             val goLibraryIntent = Intent(this, MediaLibraryActivity::class.java)
+            goLibraryIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(goLibraryIntent)
         }
 
