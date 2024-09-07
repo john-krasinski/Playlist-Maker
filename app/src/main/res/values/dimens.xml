@@ -9,4 +9,5 @@
     <dimen name="mainButtonMargin">16dp</dimen>
     <dimen name="headerTextPadding">16dp</dimen>
     <dimen name="headerTextSize">22sp</dimen>
+    <dimen name="searchBoxCornerRadius">8dp</dimen>
 </resources>
