@@ -31,7 +31,6 @@ class SettingsActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             val goBackIntent = Intent(this, MainActivity::class.java)
             startActivity(goBackIntent)
-            finish()
         }
 
         darkThemeButton.setOnClickListener {

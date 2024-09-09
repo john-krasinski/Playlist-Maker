@@ -16,19 +16,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="16dp">
-            <ImageView
-                android:id="@+id/btnBackFromSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:src="@drawable/arrow_left"
-                />
-
             <TextView
+                android:id="@+id/btnBackFromSettings"
                 style="@style/HeaderText"
-                android:layout_gravity="start|center_vertical"
                 android:text="@string/settingsHeader"
-                android:textAlignment="textStart"/>
+                android:drawableLeft="@drawable/arrow_left"
+                />
 
         </LinearLayout>
         <LinearLayout

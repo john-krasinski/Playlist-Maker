@@ -28,14 +28,12 @@ class SearchActivity : AppCompatActivity() {
         }
 
         val backButton = findViewById<View>(R.id.btnBackFromSearch)
-//        val linearLayout = findViewById<LinearLayout>(R.id.container)
         val inputEditText = findViewById<EditText>(R.id.searchBox)
         val clearButton = findViewById<ImageView>(R.id.searchBoxClearIcon)
 
         backButton.setOnClickListener {
             val goBackIntent = Intent(this, MainActivity::class.java)
             startActivity(goBackIntent)
-            finish()
         }
 
         clearButton.setOnClickListener {
@@ -53,7 +51,6 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.isNullOrEmpty()) {
-//                    linearLayout.setBackgroundColor(getColor(R.color.prime_neutral))
                 } else {
                     query = s.toString()
                     doSearch(query)
