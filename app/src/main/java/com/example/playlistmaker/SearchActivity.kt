@@ -1,11 +1,13 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -37,6 +39,8 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearButton.setOnClickListener {
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             inputEditText.setText("")
         }
 
@@ -73,13 +77,11 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_QUERY, query)
-        Toast.makeText(this, "Saving query {$query}", Toast.LENGTH_SHORT).show()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         query = savedInstanceState.getString(SEARCH_QUERY, QUERY_DEF)
-        Toast.makeText(this, "Restoring query {$query}", Toast.LENGTH_SHORT).show()
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
