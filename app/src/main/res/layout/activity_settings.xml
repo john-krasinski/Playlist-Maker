@@ -1,38 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.PlaylistMakerSecondary"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp">
-            <ImageView
-                android:id="@+id/btnBackFromSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:src="@drawable/arrow_left" />
-
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
+                android:id="@+id/btnBackFromSettings"
+                style="@style/HeaderText"
                 android:text="@string/settingsHeader"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:padding="@dimen/headerTextPadding"
-                android:textSize="@dimen/headerTextSize" />
+                android:drawableLeft="@drawable/arrow_left"
+                />
 
         </LinearLayout>
         <LinearLayout
@@ -42,18 +31,13 @@
             android:layout_gravity="center_vertical">
 
             <Switch
-                android:id="@+id/btnDarkTheme"
+                android:id="@+id/btnToggleDarkTheme"
+                style="@style/SettingsItemText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:paddingVertical="@dimen/settingsPaddingVertical"
-                android:paddingLeft="16dp"
                 android:paddingRight="6dp"
-                android:text="@string/darkThemeSetting"
-                android:textAlignment="viewStart"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:textSize="@dimen/settingsTextSize" />
+                android:trackTint="?attr/colorTertiary"
+                android:thumbTint="?attr/colorTertiary"
+                android:text="@string/darkThemeSetting"/>
             <LinearLayout
                 android:id="@+id/btnShare"
                 android:layout_width="match_parent"
@@ -64,22 +48,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/white"
-                        android:paddingHorizontal="@dimen/settingsPaddingHorizontal"
-                        android:paddingVertical="@dimen/settingsPaddingVertical"
-                        android:layout_gravity="start|center_vertical"
-                        android:text="@string/shareAppSetting"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/settingsTextSize"/>
+                        style="@style/SettingsItemText"
+                        android:text="@string/shareAppSetting"/>
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
-                        android:backgroundTint="@color/iconGrey"
-                        android:padding="@dimen/settingsIconPadding"
+                        style="@style/SettingsItemIcon"
                         android:src="@drawable/share" />
                 </FrameLayout>
 
@@ -94,22 +66,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/white"
-                        android:paddingHorizontal="@dimen/settingsPaddingHorizontal"
-                        android:paddingVertical="@dimen/settingsPaddingVertical"
-                        android:layout_gravity="start|center_vertical"
-                        android:text="@string/contactSupportSetting"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/settingsTextSize"/>
+                        style="@style/SettingsItemText"
+                        android:text="@string/contactSupportSetting"/>
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
-                        android:backgroundTint="@color/iconGrey"
-                        android:padding="@dimen/settingsIconPadding"
+                        style="@style/SettingsItemIcon"
                         android:src="@drawable/support" />
                 </FrameLayout>
 
@@ -124,22 +84,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/white"
-                        android:paddingHorizontal="@dimen/settingsPaddingHorizontal"
-                        android:paddingVertical="@dimen/settingsPaddingVertical"
-                        android:layout_gravity="start|center_vertical"
-                        android:text="@string/userAgreementSetting"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/settingsTextSize"/>
+                        style="@style/SettingsItemText"
+                        android:text="@string/userAgreementSetting"/>
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
-                        android:backgroundTint="@color/iconGrey"
-                        android:padding="@dimen/settingsIconPadding"
+                        style="@style/SettingsItemIcon"
                         android:src="@drawable/bracket_right" />
                 </FrameLayout>
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/AppFontFamily</item>
+    </style>
+
+    <style name="Theme.PlaylistMakerSecondary" parent="Theme.PlaylistMaker">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/AppFontFamily</item>
+    </style>
+
+    <style name="HeaderText" parent="AppFontFamily">
+        <item name="android:textSize">@dimen/headerTextSize</item>
+        <item name="android:padding">@dimen/headerTextPadding</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/headerHeight</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="SettingsItemText" parent="AppFontFamily">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:paddingHorizontal">@dimen/settingsPaddingHorizontal</item>
+        <item name="android:paddingVertical">@dimen/settingsPaddingVertical</item>
+        <item name="android:layout_gravity">start|center_vertical</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/settingsTextSize</item>
+    </style>
+
+    <style name="SearchBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableStart">@drawable/search2</item>
+        <item name="android:background">@drawable/rounded_edit_text</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:layout_marginHorizontal">12dp</item>
+        <item name="android:layout_marginVertical">12dp</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:textColorHint">@color/grey4</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+</resources>
