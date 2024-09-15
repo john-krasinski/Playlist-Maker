@@ -11,4 +11,12 @@
     <dimen name="headerTextSize">22sp</dimen>
     <dimen name="headerHeight">56dp</dimen>
     <dimen name="searchBoxCornerRadius">8dp</dimen>
+    <dimen name="foundTrackPaddingH">12dp</dimen>
+    <dimen name="foundTrackPaddingV">8dp</dimen>
+    <dimen name="foundTrackCoverRadius">2dp</dimen>
+    <dimen name="foundTrackCoverSize">45dp</dimen>
+    <dimen name="foundTrackTextMarginH">8dp</dimen>
+    <dimen name="foundTrackNameTextSize">16sp</dimen>
+    <dimen name="foundTrackDetailsTextSize">13sp</dimen>
+    <dimen name="foundTrackSelectorSize">24dp</dimen>
 </resources>
