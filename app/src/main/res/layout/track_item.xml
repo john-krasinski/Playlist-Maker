@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/foundTrackItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/foundTrackPaddingH"
+    android:paddingVertical="@dimen/foundTrackPaddingV">
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="@dimen/foundTrackCoverRadius"
+        android:layout_gravity="start|center_vertical"
+        style="@style/foundTrackCoverContainer">
+        <ImageView
+            android:id="@+id/foundTrackCover"
+            style="@style/FoundTrackCoverImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:src="@drawable/album_placeholder" />
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/foundTrackTextMarginH"
+        android:layout_gravity="start|center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/foundTrackName"
+            style="@style/FoundTrackName"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:text="Sweet Child O'Mine"/>
+        <TextView
+            android:id="@+id/foundTrackDetails"
+            style="@style/FoundTrackDetails"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:text="Guns N' Roses • 22.54"/>
+    </LinearLayout>
+    <ImageView
+        android:layout_width="@dimen/foundTrackSelectorSize"
+        android:layout_height="@dimen/foundTrackSelectorSize"
+        android:layout_gravity="end|center_vertical"
+        android:src="@drawable/bracket_right"
+        />
+</LinearLayout>
