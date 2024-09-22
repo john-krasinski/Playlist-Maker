@@ -16,4 +16,7 @@
     <string name="SupportMessageHeader">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="SupportMessageText">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="SearchBoxHint">Поиск</string>
+    <string name="errorTracksNotFound">Ничего не нашлось</string>
+    <string name="errorNetworkError">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="errorPageBtnTextUpdate">Обновить</string>
 </resources>
