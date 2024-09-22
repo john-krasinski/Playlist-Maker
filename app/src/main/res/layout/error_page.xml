@@ -12,15 +12,11 @@
         android:orientation="vertical">
         <ImageView
             android:id="@+id/errorPageImg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/errorPageImgPaddingTop"
-            android:layout_gravity="center_horizontal"
-            tools:src="@drawable/track_not_found"
-            />
+            style="@style/ErrorPageImg"
+            tools:src="@drawable/track_not_found"/>
         <TextView
-            style="@style/ErrorPageText"
             android:id="@+id/errorPageMsg"
+            style="@style/ErrorPageText"
             android:text="@string/errorTracksNotFound"/>
         <Button
             android:id="@+id/errorPageBtn"

@@ -130,4 +130,11 @@
         <item name="android:textSize">14sp</item>
         <item name="cornerRadius">54dp</item>
     </style>
+
+    <style name="ErrorPageImg">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/errorPageImgPaddingTop</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
 </resources>
