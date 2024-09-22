@@ -19,4 +19,7 @@
     <dimen name="foundTrackNameTextSize">16sp</dimen>
     <dimen name="foundTrackDetailsTextSize">13sp</dimen>
     <dimen name="foundTrackSelectorSize">24dp</dimen>
+    <dimen name="errorPageImgPaddingTop">108dp</dimen>
+    <dimen name="errorPageTextSize">19sp</dimen>
+    <dimen name="errorPageTextPaddingV">16dp</dimen>
 </resources>

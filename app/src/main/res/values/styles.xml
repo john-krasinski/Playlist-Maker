@@ -81,6 +81,8 @@
         <item name="android:drawablePadding">12dp</item>
         <item name="android:textColorHint">@color/grey3</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="FoundTrackName">
@@ -103,5 +105,36 @@
         <item name="android:layout_width">@dimen/foundTrackCoverSize</item>
         <item name="android:layout_height">@dimen/foundTrackCoverSize</item>
         <item name="android:outlineSpotShadowColor">@color/white</item>
+    </style>
+
+    <style name="ErrorPageText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/errorPageTextSize</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:paddingVertical">@dimen/errorPageTextPaddingV</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+    </style>
+
+    <style name="ErrorPageButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:backgroundTint">@color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="cornerRadius">54dp</item>
+    </style>
+
+    <style name="ErrorPageImg">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/errorPageImgPaddingTop</item>
+        <item name="android:layout_gravity">center_horizontal</item>
     </style>
 </resources>
