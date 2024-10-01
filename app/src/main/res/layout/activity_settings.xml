@@ -31,7 +31,7 @@
             android:orientation="vertical"
             android:layout_gravity="center_vertical">
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/btnToggleDarkTheme"
                 style="@style/SettingsItemText"
                 android:layout_width="match_parent"
@@ -39,6 +39,15 @@
                 android:trackTint="?attr/colorTertiary"
                 android:thumbTint="?attr/colorTertiary"
                 android:text="@string/darkThemeSetting"/>
+
+<!--            <Switch-->
+<!--                android:id="@+id/btnToggleDarkTheme"-->
+<!--                style="@style/SettingsItemText"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:paddingRight="6dp"-->
+<!--                android:trackTint="?attr/colorTertiary"-->
+<!--                android:thumbTint="?attr/colorTertiary"-->
+<!--                android:text="@string/darkThemeSetting"/>-->
             <LinearLayout
                 android:id="@+id/btnShare"
                 android:layout_width="match_parent"
