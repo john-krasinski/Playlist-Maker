@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -49,13 +50,35 @@
                 android:visibility="gone"
                 />
         </FrameLayout>
+    <TextView
+        android:id="@+id/searchHistoryHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/SearchHistoryHeader"
+        android:fontFamily="@font/ys_display_medium"
+        android:textSize="19sp"
+        android:textAlignment="center"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="12dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="?attr/colorOnSecondary"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
 
     </androidx.recyclerview.widget.RecyclerView>
+    <Button
+        android:id="@+id/btnClearSearchHistory"
+        android:text="@string/ClearSearchHistoryButtonText"
+        android:visibility="gone"
+        style="@style/ButtonClearSearchHistory"
+        tools:visibility="visible"/>
 </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

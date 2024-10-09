@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toDrawable
@@ -28,12 +29,22 @@ import retrofit2.create
 import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
+
     var query: String = ""
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://itunes.apple.com/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val searchApi = retrofit.create<SearchApi>()
+    private var history: SearchHistory? = null
+    private var historyVisilble = true
+    private val onTrackClick = { track:Track ->
+        history?.add(track)
+        if (historyVisilble) {
+            reDrawHistory()
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +59,17 @@ class SearchActivity : AppCompatActivity() {
         val backButton = findViewById<View>(R.id.btnBackFromSearch)
         val inputEditText = findViewById<EditText>(R.id.searchBox)
         val clearButton = findViewById<ImageView>(R.id.searchBoxClearIcon)
+        val clearHistoryButton = findViewById<Button>(R.id.btnClearSearchHistory)
+
+        history = SearchHistory((applicationContext as App).preferences())
 
         backButton.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
+        }
+
+        clearHistoryButton.setOnClickListener {
+            history!!.clear()
+            setHistoryVisibility(false)
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.searchRecycler)
@@ -85,11 +104,15 @@ class SearchActivity : AppCompatActivity() {
 
     private fun prepareSearchBox(inputEditText: EditText, clearButton: View, foundTracksView: RecyclerView, savedInstanceState: Bundle?) {
 
+        inputEditText.isFocusedByDefault = true
+
+        setHistoryVisibility(true)
+
         clearButton.setOnClickListener {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
-            inputEditText.setText("")
             foundTracksView.adapter = TrackAdapter(listOf())
+            inputEditText.setText("")
         }
 
         if (savedInstanceState != null) {
@@ -103,6 +126,9 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.isNullOrEmpty()) {
+                    if (inputEditText.hasFocus()) {
+                        setHistoryVisibility(true)
+                    }
                 } else {
                     query = s.toString()
                     //doSearch(query)
@@ -122,6 +148,11 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && inputEditText.text.isEmpty()) {
+                setHistoryVisibility(true)
+            }
+        }
     }
 
 
@@ -129,6 +160,8 @@ class SearchActivity : AppCompatActivity() {
         searchApi.doSearch(text).enqueue(object : Callback<SearchResponse> {
 
             override fun onResponse(call: Call<SearchResponse>,response: Response<SearchResponse>) {
+                setHistoryVisibility(false)
+
                 if (response.isSuccessful) {
                     val resp = response.body()
                     if (resp != null && resp.resultCount > 0 && resp.results.size > 0 ) {
@@ -143,6 +176,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                setHistoryVisibility(false)
                 showNetworkError()
             }
         })
@@ -154,9 +188,10 @@ class SearchActivity : AppCompatActivity() {
             Track(it.trackName,
                 it.artistName,
                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis),
-                it.artworkUrl100)
+                it.artworkUrl100,
+                it.trackId)
         }
-        foundTracksView.adapter = TrackAdapter(foundTracks)
+        foundTracksView.adapter = TrackAdapter(foundTracks, onTrackClick)
     }
 
     private fun showNotFound() {
@@ -174,4 +209,29 @@ class SearchActivity : AppCompatActivity() {
         )
         val updateButton = findViewById<Button>(R.id.errorPageBtn)
     }
+
+    private fun setHistoryVisibility(visible:Boolean) {
+
+//        val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
+        val historyHeader = findViewById<TextView>(R.id.searchHistoryHeader)
+        val clearHistoryButton = findViewById<Button>(R.id.btnClearSearchHistory)
+
+        if (visible && (history!!.curSize > 0)) {
+            historyHeader.visibility = View.VISIBLE
+            clearHistoryButton.visibility = View.VISIBLE
+            reDrawHistory()
+        } else {
+            historyHeader.visibility = View.GONE
+            clearHistoryButton.visibility = View.GONE
+//            foundTracksView.adapter = TrackAdapter(listOf())
+        }
+        historyVisilble = visible
+
+    }
+
+    private fun reDrawHistory() {
+        val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
+        foundTracksView.adapter = TrackAdapter(history!!.get(), onTrackClick)
+    }
+
 }
