@@ -68,7 +68,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryButton.setOnClickListener {
-            history!!.clear()
+            history?.clear()
             setHistoryVisibility(false)
         }
 
@@ -113,6 +113,7 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             foundTracksView.adapter = TrackAdapter(listOf())
             inputEditText.setText("")
+            inputEditText.isFocusedByDefault = true
         }
 
         if (savedInstanceState != null) {
@@ -212,18 +213,16 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setHistoryVisibility(visible:Boolean) {
 
-//        val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
         val historyHeader = findViewById<TextView>(R.id.searchHistoryHeader)
         val clearHistoryButton = findViewById<Button>(R.id.btnClearSearchHistory)
-
-        if (visible && (history!!.curSize > 0)) {
+        val history = history
+        if (visible && ((history != null) && (history.curSize > 0))) {
             historyHeader.visibility = View.VISIBLE
             clearHistoryButton.visibility = View.VISIBLE
             reDrawHistory()
         } else {
             historyHeader.visibility = View.GONE
             clearHistoryButton.visibility = View.GONE
-//            foundTracksView.adapter = TrackAdapter(listOf())
         }
         historyVisilble = visible
 
@@ -231,7 +230,10 @@ class SearchActivity : AppCompatActivity() {
 
     private fun reDrawHistory() {
         val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
-        foundTracksView.adapter = TrackAdapter(history!!.get(), onTrackClick)
+        val history = history
+        if (history != null) {
+            foundTracksView.adapter = TrackAdapter(history.get(), onTrackClick)
+        }
     }
 
 }

@@ -16,6 +16,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         useDarkTheme = preferences().getBoolean(USE_DARK_THEME_KEY,false)
+        toggleDarkTheme(useDarkTheme)
     }
 
     public fun toggleDarkTheme(paramUseDarkTheme: Boolean) {
