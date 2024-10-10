@@ -19,4 +19,6 @@
     <string name="errorTracksNotFound">Ничего не нашлось</string>
     <string name="errorNetworkError">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="errorPageBtnTextUpdate">Обновить</string>
+    <string name="SearchHistoryHeader">Вы искали</string>
+    <string name="ClearSearchHistoryButtonText">Очистить историю</string>
 </resources>

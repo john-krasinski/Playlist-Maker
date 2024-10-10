@@ -4,11 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
+
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +24,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val backButton = findViewById<View>(R.id.btnBackFromSettings)
-        val darkThemeButton = findViewById<View>(R.id.btnToggleDarkTheme)
+        val darkThemeButton = findViewById<SwitchMaterial>(R.id.btnToggleDarkTheme)
         val shareButton = findViewById<View>(R.id.btnShare)
         val supportButton = findViewById<View>(R.id.btnSupport)
         val userAgreeButton = findViewById<View>(R.id.btnUserAgreement)
@@ -33,8 +34,9 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(goBackIntent)
         }
 
-        darkThemeButton.setOnClickListener {
-            Toast.makeText(this@SettingsActivity, "darkThemeButton Click", Toast.LENGTH_SHORT).show()
+        darkThemeButton.isChecked = App.useDarkTheme
+        darkThemeButton.setOnCheckedChangeListener { btn, isChecked ->
+            (applicationContext as App).toggleDarkTheme(isChecked)
         }
 
         shareButton.setOnClickListener {
