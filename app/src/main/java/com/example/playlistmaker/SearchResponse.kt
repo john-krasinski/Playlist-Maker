@@ -6,9 +6,13 @@ data class SearchResponse(
 )
 
 data class ResponseTrackInfo(
+    val trackId: Int,
     val trackName: String,
     val artistName: String,
+    val collectionName: String,
     val trackTimeMillis: Int,
     val artworkUrl100: String,
-    val trackId: Int
+    val country: String,
+    val primaryGenreName: String,
+    val releaseDate: String
 )

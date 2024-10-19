@@ -38,11 +38,13 @@ class SearchActivity : AppCompatActivity() {
     private val searchApi = retrofit.create<SearchApi>()
     private var history: SearchHistory? = null
     private var historyVisilble = true
+
     private val onTrackClick = { track:Track ->
         history?.add(track)
         if (historyVisilble) {
             reDrawHistory()
         }
+        openTrackInPlayer(track)
     }
 
 
@@ -186,11 +188,16 @@ class SearchActivity : AppCompatActivity() {
     private fun showFoundTracks(trackInfo: List<ResponseTrackInfo>) {
         val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
         val foundTracks = trackInfo.map {
-            Track(it.trackName,
+            Track(it.trackId,
+                it.trackName,
                 it.artistName,
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis),
+                albumName = it.collectionName,
+                trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis),
                 it.artworkUrl100,
-                it.trackId)
+                it.country,
+                it.primaryGenreName,
+                year = it.releaseDate.replaceAfter('-',"")
+                )
         }
         foundTracksView.adapter = TrackAdapter(foundTracks, onTrackClick)
     }
@@ -234,6 +241,24 @@ class SearchActivity : AppCompatActivity() {
         if (history != null) {
             foundTracksView.adapter = TrackAdapter(history.get(), onTrackClick)
         }
+    }
+
+    private fun openTrackInPlayer(track: Track) {
+        val goPlayerIntent = Intent(this, AudioPlayer::class.java)
+        goPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        goPlayerIntent.apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra(TRACK_NAME_KEY,track.trackName)
+            putExtra(TRACK_ID_KEY,track.trackId)
+            putExtra(ARTIST_NAME_KEY,track.artistName)
+            putExtra(ALBUM_NAME_KEY, track.albumName)
+            putExtra(RELEASE_YEAR_KEY, track.year)
+            putExtra(GENRE_KEY, track.genre)
+            putExtra(COUNTRY_KEY, track.country)
+            putExtra(TRACK_DURATION_KEY, track.trackTime)
+            putExtra(ARTWORK_URL_KEY, track.artworkUrl)
+        }
+        startActivity(goPlayerIntent)
     }
 
 }

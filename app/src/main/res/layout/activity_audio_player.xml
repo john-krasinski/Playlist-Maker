@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AudioPlayer">
+
+    <TextView
+        android:id="@+id/btnBackFromPlayer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/topGuideLine"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/HeaderText"
+        android:drawableLeft="@drawable/arrow_left"/> <!--  return  -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_begin="@dimen/headerHeight"/> <!--  top guide  -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/startGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="24dp"/> <!--  left guide  -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/endGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="24dp"
+        /> <!--  right guide  -->
+    <ImageView
+        android:id="@+id/albumImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/btnBackFromPlayer"
+        app:layout_constraintStart_toStartOf="@id/startGuideLine"
+        app:layout_constraintEnd_toEndOf="@id/endGuideLine"
+        app:layout_constraintBottom_toTopOf="@id/trackName"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/player_album_placeholder"/> <!--  album image  -->
+    <TextView
+        android:id="@+id/trackName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/albumImage"
+        app:layout_constraintStart_toStartOf="@id/startGuideLine"
+        app:layout_constraintEnd_toEndOf="@id/endGuideLine"
+        android:layout_marginTop="22dp"
+        style="@style/PlayerText"
+        android:textSize="24sp"
+        tools:text="Yesterday"/> <!--  song name  -->
+    <TextView
+        android:id="@+id/artistName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/trackName"
+        app:layout_constraintStart_toStartOf="@id/startGuideLine"
+        android:layout_marginTop="12dp"
+        style="@style/PlayerText"
+        tools:text="The Beatles"/> <!--  artist name  -->
+    <ImageView
+        android:id="@+id/btnPlayPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/play"
+        app:layout_constraintTop_toBottomOf="@id/artistName"
+        app:layout_constraintStart_toEndOf="@id/btnAddToPlaylist"
+        app:layout_constraintEnd_toStartOf="@id/btnLike"
+        android:layout_marginTop="30dp"/> <!--  button play/pause  -->
+    <ImageView
+        android:id="@+id/btnLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/like_empty"
+        app:layout_constraintTop_toTopOf="@id/btnPlayPause"
+        app:layout_constraintStart_toEndOf="@id/btnPlayPause"
+        app:layout_constraintEnd_toEndOf="@id/endGuideLine"
+        app:layout_constraintBottom_toBottomOf="@id/btnPlayPause"/> <!--  button like  -->
+    <ImageView
+        android:id="@+id/btnAddToPlaylist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add"
+        app:layout_constraintTop_toTopOf="@id/btnPlayPause"
+        app:layout_constraintStart_toEndOf="@id/startGuideLine"
+        app:layout_constraintEnd_toStartOf="@id/btnPlayPause"
+        app:layout_constraintBottom_toBottomOf="@id/btnPlayPause"/> <!--  button add to playlist  -->
+    <TextView
+        android:id="@+id/timePlayed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/btnPlayPause"
+        app:layout_constraintStart_toStartOf="@id/startGuideLine"
+        app:layout_constraintEnd_toEndOf="@id/endGuideLine"
+        android:layout_marginTop="4dp"
+        android:text="0:00"
+        style="@style/PlayerText"
+        /> <!--  played time  -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/detailsStartGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp"/> <!--  left DETAILS guide  -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/detailsEndGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp"/> <!--  right DETAILS guide  -->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/detailsDurationGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/timePlayed"
+        app:layout_constraintStart_toStartOf="@id/detailsStartGuideLine"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:layout_marginTop="30dp"
+        app:constraint_referenced_ids="detailsDurationLabel,detailsDurationValue"/>  <!-- duration -->
+    <TextView
+        android:id="@+id/detailsDurationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsDurationGroup"
+        app:layout_constraintStart_toEndOf="@id/detailsStartGuideLine"
+        android:text="@string/trackDetailsDurationLabel"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        android:textColor="@color/grey"/> <!--  details duration label  -->
+    <TextView
+        android:id="@+id/detailsDurationValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsDurationGroup"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        tools:text="5:35"/> <!--  details duration  -->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/detailsAlbumGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsDurationGroup"
+        app:layout_constraintStart_toStartOf="@id/detailsStartGuideLine"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:layout_marginTop="30dp"
+        app:constraint_referenced_ids="detailsAlbumLabel,detailsAlbumValue"/>  <!-- Album -->
+    <TextView
+        android:id="@+id/detailsAlbumLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsAlbumGroup"
+        app:layout_constraintStart_toEndOf="@id/detailsStartGuideLine"
+        android:text="@string/trackDetailsAlbumLabel"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        android:textColor="@color/grey"/> <!--  details Album label  -->
+    <TextView
+        android:id="@+id/detailsAlbumValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsAlbumGroup"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        tools:text="Yesterday"/> <!--  details Album  -->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/detailsYearGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsAlbumGroup"
+        app:layout_constraintStart_toStartOf="@id/detailsStartGuideLine"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:layout_marginTop="30dp"
+        app:constraint_referenced_ids="detailsYearLabel,detailsYearValue"/>  <!-- Year -->
+    <TextView
+        android:id="@+id/detailsYearLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsYearGroup"
+        app:layout_constraintStart_toEndOf="@id/detailsStartGuideLine"
+        android:text="@string/trackDetailsYearLabel"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        android:textColor="@color/grey"/> <!--  details Year label  -->
+    <TextView
+        android:id="@+id/detailsYearValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsYearGroup"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        tools:text="2009"/> <!--  details duration  -->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/detailsGenreGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsYearGroup"
+        app:layout_constraintStart_toStartOf="@id/detailsStartGuideLine"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:layout_marginTop="30dp"
+        app:constraint_referenced_ids="detailsGenreLabel,detailsGenreValue"/>  <!-- Genre -->
+    <TextView
+        android:id="@+id/detailsGenreLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsGenreGroup"
+        app:layout_constraintStart_toEndOf="@id/detailsStartGuideLine"
+        android:text="@string/trackDetailsGenreLabel"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        android:textColor="@color/grey"/> <!--  details Genre label  -->
+    <TextView
+        android:id="@+id/detailsGenreValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsGenreGroup"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        tools:text="Rock"/> <!--  details Genre  -->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/detailsCountryGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsGenreGroup"
+        app:layout_constraintStart_toStartOf="@id/detailsStartGuideLine"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:layout_marginTop="30dp"
+        app:constraint_referenced_ids="detailsCountryLabel,detailsCountryValue"/>  <!-- Country -->
+    <TextView
+        android:id="@+id/detailsCountryLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsCountryGroup"
+        app:layout_constraintStart_toEndOf="@id/detailsStartGuideLine"
+        android:text="@string/trackDetailsCountryLabel"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        android:textColor="@color/grey"/> <!--  details Country label  -->
+    <TextView
+        android:id="@+id/detailsCountryValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detailsCountryGroup"
+        app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        android:paddingVertical="8dp"
+        style="@style/PlayerDetailsText"
+        tools:text="Великобритания"/> <!--  details Country  -->
+</androidx.constraintlayout.widget.ConstraintLayout>

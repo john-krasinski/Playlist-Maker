@@ -19,7 +19,7 @@
             style="@style/FoundTrackCoverImg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:src="@drawable/album_placeholder" />
+            tools:src="@drawable/tracklist_album_placeholder" />
     </androidx.cardview.widget.CardView>
 
     <LinearLayout
