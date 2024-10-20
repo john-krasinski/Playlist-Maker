@@ -1,12 +1,10 @@
 package com.example.playlistmaker
 
-import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import android.content.Context
 
 class TrackViewHolder(val item: View, private val onClick: ((Track) -> Unit?)?) : RecyclerView.ViewHolder(item) {
     private val cover: ImageView = item.findViewById(R.id.foundTrackCover)
@@ -17,7 +15,7 @@ class TrackViewHolder(val item: View, private val onClick: ((Track) -> Unit?)?) 
     fun bind(model: Track) {
         Glide.with(cover.context)
             .load(model.artworkUrl)
-            .placeholder(R.drawable.album_placeholder)
+            .placeholder(R.drawable.tracklist_album_placeholder)
             .fitCenter()
             .centerCrop()
             .into(cover)

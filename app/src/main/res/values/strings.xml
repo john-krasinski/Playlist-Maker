@@ -21,4 +21,10 @@
     <string name="errorPageBtnTextUpdate">Обновить</string>
     <string name="SearchHistoryHeader">Вы искали</string>
     <string name="ClearSearchHistoryButtonText">Очистить историю</string>
+    <string name="trackDetailsDurationLabel">Длительность</string>
+    <string name="trackDetailsAlbumLabel">Альбом</string>
+    <string name="trackDetailsYearLabel">Год</string>
+    <string name="trackDetailsGenreLabel">Жанр</string>
+    <string name="trackDetailsCountryLabel">Страна</string>
+    <string name="trackDetailUnknown">Unknown</string>
 </resources>
