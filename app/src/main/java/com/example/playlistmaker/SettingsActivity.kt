@@ -30,8 +30,7 @@ class SettingsActivity : AppCompatActivity() {
         val userAgreeButton = findViewById<View>(R.id.btnUserAgreement)
 
         backButton.setOnClickListener {
-            val goBackIntent = Intent(this, MainActivity::class.java)
-            startActivity(goBackIntent)
+            finish()
         }
 
         darkThemeButton.isChecked = App.useDarkTheme

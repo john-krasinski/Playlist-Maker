@@ -5,6 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.PlaylistMakerSecondary"
+    android:background="?attr/colorSecondary"
     tools:context=".AudioPlayer">
 
     <TextView
@@ -32,23 +34,31 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="24dp"
         /> <!--  right guide  -->
-    <ImageView
-        android:id="@+id/albumImage"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/albumImageFrame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="?attr/colorSecondary"
+        app:cardElevation="0dp"
         app:layout_constraintTop_toBottomOf="@id/btnBackFromPlayer"
         app:layout_constraintStart_toStartOf="@id/startGuideLine"
         app:layout_constraintEnd_toEndOf="@id/endGuideLine"
-        app:layout_constraintBottom_toTopOf="@id/trackName"
-        android:layout_marginTop="24dp"
-        android:src="@drawable/player_album_placeholder"/> <!--  album image  -->
+        app:layout_constraintBottom_toTopOf="@id/trackName">
+        <ImageView
+            android:id="@+id/albumImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/player_album_placeholder"/>
+    </androidx.cardview.widget.CardView><!--  album image  -->
+
     <TextView
         android:id="@+id/trackName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/albumImage"
+        app:layout_constraintTop_toBottomOf="@id/albumImageFrame"
         app:layout_constraintStart_toStartOf="@id/startGuideLine"
-        app:layout_constraintEnd_toEndOf="@id/endGuideLine"
         android:layout_marginTop="22dp"
         style="@style/PlayerText"
         android:textSize="24sp"

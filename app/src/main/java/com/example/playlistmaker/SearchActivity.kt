@@ -66,7 +66,7 @@ class SearchActivity : AppCompatActivity() {
         history = SearchHistory((applicationContext as App).preferences())
 
         backButton.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
 
         clearHistoryButton.setOnClickListener {
