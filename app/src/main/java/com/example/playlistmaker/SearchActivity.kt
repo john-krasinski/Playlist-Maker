@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -12,10 +14,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +30,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import java.util.Locale
 
+const val SEARCH_DEBOUNCE_DELAY_MS: Long = 2000
+
 class SearchActivity : AppCompatActivity() {
 
     var query: String = ""
@@ -37,11 +41,14 @@ class SearchActivity : AppCompatActivity() {
         .build()
     private val searchApi = retrofit.create<SearchApi>()
     private var history: SearchHistory? = null
-    private var historyVisilble = true
+    private var historyVisible = true
+
+    val handler = Handler(Looper.getMainLooper())
+    val searchRunnable = Runnable { doSearch(query) }
 
     private val onTrackClick = { track:Track ->
         history?.add(track)
-        if (historyVisilble) {
+        if (historyVisible) {
             reDrawHistory()
         }
         openTrackInPlayer(track)
@@ -62,6 +69,8 @@ class SearchActivity : AppCompatActivity() {
         val inputEditText = findViewById<EditText>(R.id.searchBox)
         val clearButton = findViewById<ImageView>(R.id.searchBoxClearIcon)
         val clearHistoryButton = findViewById<Button>(R.id.btnClearSearchHistory)
+
+
 
         history = SearchHistory((applicationContext as App).preferences())
 
@@ -131,10 +140,11 @@ class SearchActivity : AppCompatActivity() {
                 if (s.isNullOrEmpty()) {
                     if (inputEditText.hasFocus()) {
                         setHistoryVisibility(true)
+                        handler.removeCallbacks(searchRunnable)
                     }
                 } else {
                     query = s.toString()
-                    //doSearch(query)
+                    debounceSearch()
                 }
                 clearButton.visibility = clearButtonVisibility(s)
             }
@@ -158,11 +168,30 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun debounceSearch() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
+    }
+
+    private fun showProgress() {
+        val progress = findViewById<ProgressBar>(R.id.progressSearch)
+        progress.visibility = View.VISIBLE
+    }
+
+    private fun hideProgress() {
+        val progress = findViewById<ProgressBar>(R.id.progressSearch)
+        progress.visibility = View.GONE
+    }
 
     private fun doSearch(text: String) {
+
+        showProgress()
+
         searchApi.doSearch(text).enqueue(object : Callback<SearchResponse> {
 
             override fun onResponse(call: Call<SearchResponse>,response: Response<SearchResponse>) {
+
+                hideProgress()
                 setHistoryVisibility(false)
 
                 if (response.isSuccessful) {
@@ -179,6 +208,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                hideProgress()
                 setHistoryVisibility(false)
                 showNetworkError()
             }
@@ -196,7 +226,8 @@ class SearchActivity : AppCompatActivity() {
                 it.artworkUrl100,
                 it.country,
                 it.primaryGenreName,
-                year = it.releaseDate.replaceAfter('-',"")
+                year = it.releaseDate.replaceAfter('-',""),
+                it.previewUrl
                 )
         }
         foundTracksView.adapter = TrackAdapter(foundTracks, onTrackClick)
@@ -211,7 +242,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showNetworkError() {
         val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
-        val onClick = { doSearch(query) }
+        val onClick = { debounceSearch() }
         foundTracksView.adapter = SearchErrorAdapter(
             SearchError(getString(R.string.errorNetworkError), getDrawable(R.drawable.network_error),getString(R.string.errorPageBtnTextUpdate), onClick)
         )
@@ -231,7 +262,7 @@ class SearchActivity : AppCompatActivity() {
             historyHeader.visibility = View.GONE
             clearHistoryButton.visibility = View.GONE
         }
-        historyVisilble = visible
+        historyVisible = visible
 
     }
 
@@ -244,7 +275,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun openTrackInPlayer(track: Track) {
-        val goPlayerIntent = Intent(this, AudioPlayer::class.java)
+        val goPlayerIntent = Intent(this, AudioPlayerActivity::class.java)
         goPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         goPlayerIntent.apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -257,6 +288,7 @@ class SearchActivity : AppCompatActivity() {
             putExtra(COUNTRY_KEY, track.country)
             putExtra(TRACK_DURATION_KEY, track.trackTime)
             putExtra(ARTWORK_URL_KEY, track.artworkUrl)
+            putExtra(PREVIEW_URL_KEY, track.previewUrl)
         }
         startActivity(goPlayerIntent)
     }

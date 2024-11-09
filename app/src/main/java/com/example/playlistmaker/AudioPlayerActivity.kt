@@ -1,8 +1,9 @@
 package com.example.playlistmaker
 
-import android.content.Intent
-import android.net.Uri
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,12 +12,35 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class AudioPlayer : AppCompatActivity() {
+enum class PlayerState {
+Default, Prepared, Playing, Paused
+}
 
-    var isPlaying = false
+const val POSITION_UPDATE_INTERVAL_MS: Long = 300
+
+class AudioPlayerActivity : AppCompatActivity() {
+
     var isLiked = false
     var isAddedToPlaylist = false
+
+    val mediaPlayer = MediaPlayer()
+    var playerState = PlayerState.Default
+    var currentPosition: Int = 0
+
+    lateinit var timePlayed: TextView
+    lateinit var btnPlayPause: ImageView
+
+    val handler = Handler(Looper.getMainLooper())
+    val updateTimeRunnable = object: Runnable {
+        override fun run() {
+            timePlayed.text =  SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+            handler.postDelayed(this, POSITION_UPDATE_INTERVAL_MS)
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +58,10 @@ class AudioPlayer : AppCompatActivity() {
         val artwork = findViewById<ImageView>(R.id.albumImage)
         val trackName = findViewById<TextView>(R.id.trackName)
         val artistName = findViewById<TextView>(R.id.artistName)
-        val btnPlayPause = findViewById<ImageView>(R.id.btnPlayPause)
+        btnPlayPause = findViewById<ImageView>(R.id.btnPlayPause)
         val btnLike = findViewById<ImageView>(R.id.btnLike)
         val btnPlaylist = findViewById<ImageView>(R.id.btnAddToPlaylist)
-        val timePlayed = findViewById<TextView>(R.id.timePlayed)
+        timePlayed = findViewById<TextView>(R.id.timePlayed)
         val trackDuration = findViewById<TextView>(R.id.detailsDurationValue)
         val albumName = findViewById<TextView>(R.id.detailsAlbumValue)
         val trackYear = findViewById<TextView>(R.id.detailsYearValue)
@@ -65,17 +89,12 @@ class AudioPlayer : AppCompatActivity() {
             finish()
         }
 
+        btnPlayPause.isEnabled = false
         btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
         btnPlayPause.setOnClickListener {
-            btnPlayPause.setImageDrawable(
-                if (isPlaying) {
-                    getDrawable(R.drawable.play)
-                } else {
-                    getDrawable(R.drawable.pause)
-                }
-            )
-            isPlaying = !isPlaying
+            playbackControl()
         }
+        preparePlayer(currentTrack.previewUrl)
 
         btnLike.setOnClickListener {
             btnLike.setImageDrawable(
@@ -102,6 +121,17 @@ class AudioPlayer : AppCompatActivity() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(updateTimeRunnable)
+        mediaPlayer.release()
+    }
+
     private fun getCurrentTrack(): Track {
         val trackId = intent.getIntExtra(TRACK_ID_KEY, -1)
         val trackName = intent.getStringExtra(TRACK_NAME_KEY) ?: getString(R.string.trackDetailUnknown)
@@ -112,7 +142,50 @@ class AudioPlayer : AppCompatActivity() {
         val country = intent.getStringExtra(COUNTRY_KEY) ?: getString(R.string.trackDetailUnknown)
         val trackTime = intent.getStringExtra(TRACK_DURATION_KEY) ?: getString(R.string.trackDetailUnknown)
         val artworkUrl = intent.getStringExtra(ARTWORK_URL_KEY) ?: ""
+        val previewUrl = intent.getStringExtra(PREVIEW_URL_KEY) ?: ""
 
-        return Track(trackId,trackName,artistName,albumName,trackTime,artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),country,genre,year)
+        return Track(trackId,trackName,artistName,albumName,trackTime,artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),country,genre,year,previewUrl)
     }
+
+    private fun preparePlayer(sourceUrl: String) {
+        mediaPlayer.setDataSource(sourceUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            btnPlayPause.isEnabled = true
+            playerState = PlayerState.Prepared
+        }
+        mediaPlayer.setOnCompletionListener {
+            btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
+            playerState = PlayerState.Prepared
+            timePlayed.text = "00:00"
+            handler.removeCallbacks(updateTimeRunnable)
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        btnPlayPause.setImageDrawable(getDrawable(R.drawable.pause))
+        playerState = PlayerState.Playing
+        handler.post(updateTimeRunnable)
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
+        playerState = PlayerState.Paused
+        handler.removeCallbacks(updateTimeRunnable)
+    }
+
+    private fun playbackControl() {
+        when(playerState) {
+            PlayerState.Playing -> {
+                pausePlayer()
+            }
+            PlayerState.Prepared, PlayerState.Paused -> {
+                startPlayer()
+            }
+            PlayerState.Default -> {}
+        }
+    }
+
 }

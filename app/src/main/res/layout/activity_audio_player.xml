@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:theme="@style/Theme.PlaylistMakerSecondary"
     android:background="?attr/colorSecondary"
-    tools:context=".AudioPlayer">
+    tools:context=".AudioPlayerActivity">
 
     <TextView
         android:id="@+id/btnBackFromPlayer"
@@ -107,7 +107,7 @@
         app:layout_constraintStart_toStartOf="@id/startGuideLine"
         app:layout_constraintEnd_toEndOf="@id/endGuideLine"
         android:layout_marginTop="4dp"
-        android:text="0:00"
+        android:text="00:00"
         style="@style/PlayerText"
         /> <!--  played time  -->
     <androidx.constraintlayout.widget.Guideline

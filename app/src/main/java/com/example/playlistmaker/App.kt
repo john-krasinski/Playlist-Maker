@@ -16,6 +16,7 @@ const val GENRE_KEY = "genre"
 const val COUNTRY_KEY = "country"
 const val TRACK_DURATION_KEY = "duration"
 const val ARTWORK_URL_KEY = "artwork_url"
+const val PREVIEW_URL_KEY = "preview_url"
 
 class App : Application() {
 
