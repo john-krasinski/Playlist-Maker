@@ -9,7 +9,8 @@ import com.bumptech.glide.Glide
 class TrackViewHolder(val item: View, private val onClick: ((Track) -> Unit?)?) : RecyclerView.ViewHolder(item) {
     private val cover: ImageView = item.findViewById(R.id.foundTrackCover)
     private val name: TextView = item.findViewById(R.id.foundTrackName)
-    private val details: TextView = item.findViewById(R.id.foundTrackDetails)
+    private val artist: TextView = item.findViewById(R.id.foundTrackArtist)
+    private val duration: TextView = item.findViewById(R.id.foundTrackDuration)
     private val itemContainer: View = item.findViewById(R.id.foundTrackItem)
 
     fun bind(model: Track) {
@@ -20,7 +21,8 @@ class TrackViewHolder(val item: View, private val onClick: ((Track) -> Unit?)?) 
             .centerCrop()
             .into(cover)
         name.text = model.trackName
-        details.text = model.artistName + " • " + model.trackTime
+        artist.text = model.artistName
+        duration.text = " • " + model.trackTime
         if (onClick != null) {
             itemContainer.setOnClickListener { onClick.invoke(model) }
         }

@@ -53,6 +53,11 @@
         app:layout_constraintVertical_bias="0.3"
         android:visibility="gone"
         tools:visibility="visible"/>
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/searchHistoryGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="searchHistoryHeader, btnClearSearchHistory"/>
     <TextView
         android:id="@+id/searchHistoryHeader"
         android:layout_width="match_parent"

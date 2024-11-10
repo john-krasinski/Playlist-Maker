@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/foundTrackItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:paddingHorizontal="@dimen/foundTrackPaddingH"
     android:paddingVertical="@dimen/foundTrackPaddingV">
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/coverContainer"
+        style="@style/foundTrackCoverContainer"
         app:cardCornerRadius="@dimen/foundTrackCoverRadius"
-        android:layout_gravity="start|center_vertical"
-        style="@style/foundTrackCoverContainer">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/foundTrackCover"
             style="@style/FoundTrackCoverImg"
@@ -22,32 +25,55 @@
             tools:src="@drawable/tracklist_album_placeholder" />
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/foundTrackName"
+        style="@style/FoundTrackName"
         android:layout_width="0dp"
+        android:textAlignment="textStart"
+        app:layout_constrainedWidth="true"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/trackSelector"
         android:layout_marginHorizontal="@dimen/foundTrackTextMarginH"
-        android:layout_gravity="start|center_vertical"
-        android:layout_weight="1"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/foundTrackName"
-            style="@style/FoundTrackName"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="Sweet Child O'Mine"/>
-        <TextView
-            android:id="@+id/foundTrackDetails"
-            style="@style/FoundTrackDetails"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="Guns N' Roses • 22.54"/>
-    </LinearLayout>
+        app:layout_constraintBottom_toTopOf="@id/foundTrackArtist"
+        app:layout_constraintStart_toEndOf="@id/coverContainer"
+        app:layout_constraintTop_toTopOf="@id/coverContainer"
+        tools:text="Sweet Child O'Mine" />
+
+    <TextView
+        android:id="@+id/foundTrackArtist"
+        style="@style/FoundTrackDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:layout_marginStart="@dimen/foundTrackTextMarginH"
+        app:layout_constraintBottom_toBottomOf="@id/coverContainer"
+        app:layout_constraintEnd_toStartOf="@id/foundTrackDuration"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0.001"
+        app:layout_constraintStart_toEndOf="@id/coverContainer"
+        app:layout_constraintTop_toBottomOf="@id/foundTrackName"
+        tools:text="Guns N' Roses" />
+
+    <TextView
+        android:id="@+id/foundTrackDuration"
+        style="@style/FoundTrackDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/coverContainer"
+        app:layout_constraintEnd_toStartOf="@id/trackSelector"
+        app:layout_constraintStart_toEndOf="@id/foundTrackArtist"
+        app:layout_constraintTop_toBottomOf="@id/foundTrackName"
+        tools:text=" • 22.54" />
+
     <ImageView
+        android:id="@+id/trackSelector"
         android:layout_width="@dimen/foundTrackSelectorSize"
         android:layout_height="@dimen/foundTrackSelectorSize"
-        android:layout_gravity="end|center_vertical"
         android:src="@drawable/bracket_right"
-        />
-</LinearLayout>
+        app:layout_constraintBottom_toBottomOf="@id/coverContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/coverContainer"
+        app:layout_constraintStart_toEndOf="@id/foundTrackName"
+        android:layout_marginStart="4dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

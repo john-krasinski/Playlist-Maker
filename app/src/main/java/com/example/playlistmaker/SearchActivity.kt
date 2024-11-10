@@ -18,6 +18,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,6 +47,12 @@ class SearchActivity : AppCompatActivity() {
     val handler = Handler(Looper.getMainLooper())
     val searchRunnable = Runnable { doSearch(query) }
 
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var backButton: View
+    private lateinit var inputEditText: EditText
+    private lateinit var clearButton: ImageView
+    private lateinit var clearHistoryButton: Button
+
     private val onTrackClick = { track:Track ->
         history?.add(track)
         if (historyVisible) {
@@ -65,12 +72,14 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        val backButton = findViewById<View>(R.id.btnBackFromSearch)
-        val inputEditText = findViewById<EditText>(R.id.searchBox)
-        val clearButton = findViewById<ImageView>(R.id.searchBoxClearIcon)
-        val clearHistoryButton = findViewById<Button>(R.id.btnClearSearchHistory)
+        backButton = findViewById<View>(R.id.btnBackFromSearch)
+        inputEditText = findViewById<EditText>(R.id.searchBox)
+        clearButton = findViewById<ImageView>(R.id.searchBoxClearIcon)
+        clearHistoryButton = findViewById<Button>(R.id.btnClearSearchHistory)
+        recyclerView = findViewById<RecyclerView>(R.id.searchRecycler)
 
-
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = TrackAdapter(listOf())
 
         history = SearchHistory((applicationContext as App).preferences())
 
@@ -83,11 +92,7 @@ class SearchActivity : AppCompatActivity() {
             setHistoryVisibility(false)
         }
 
-        val recyclerView = findViewById<RecyclerView>(R.id.searchRecycler)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = TrackAdapter(listOf())
-
-        prepareSearchBox(inputEditText, clearButton, recyclerView, savedInstanceState)
+        prepareSearchBox(savedInstanceState)
     }
 
     companion object {
@@ -113,7 +118,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun prepareSearchBox(inputEditText: EditText, clearButton: View, foundTracksView: RecyclerView, savedInstanceState: Bundle?) {
+    private fun prepareSearchBox(savedInstanceState: Bundle?) {
 
         inputEditText.isFocusedByDefault = true
 
@@ -122,7 +127,7 @@ class SearchActivity : AppCompatActivity() {
         clearButton.setOnClickListener {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
-            foundTracksView.adapter = TrackAdapter(listOf())
+            recyclerView.adapter = TrackAdapter(listOf())
             inputEditText.setText("")
             inputEditText.isFocusedByDefault = true
         }
@@ -175,6 +180,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showProgress() {
         val progress = findViewById<ProgressBar>(R.id.progressSearch)
+        setHistoryVisibility(false)
         progress.visibility = View.VISIBLE
     }
 
@@ -192,7 +198,6 @@ class SearchActivity : AppCompatActivity() {
             override fun onResponse(call: Call<SearchResponse>,response: Response<SearchResponse>) {
 
                 hideProgress()
-                setHistoryVisibility(false)
 
                 if (response.isSuccessful) {
                     val resp = response.body()
@@ -209,14 +214,12 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 hideProgress()
-                setHistoryVisibility(false)
                 showNetworkError()
             }
         })
     }
 
     private fun showFoundTracks(trackInfo: List<ResponseTrackInfo>) {
-        val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
         val foundTracks = trackInfo.map {
             Track(it.trackId,
                 it.trackName,
@@ -230,47 +233,47 @@ class SearchActivity : AppCompatActivity() {
                 it.previewUrl
                 )
         }
-        foundTracksView.adapter = TrackAdapter(foundTracks, onTrackClick)
+        recyclerView.adapter = TrackAdapter(foundTracks, onTrackClick)
+        recyclerView.visibility = View.VISIBLE
     }
 
     private fun showNotFound() {
-        val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
-        foundTracksView.adapter = SearchErrorAdapter(
+        recyclerView.adapter = SearchErrorAdapter(
             SearchError(getString(R.string.errorTracksNotFound),getDrawable(R.drawable.track_not_found),null, null)
         )
+        recyclerView.visibility = View.VISIBLE
     }
 
     private fun showNetworkError() {
-        val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
         val onClick = { debounceSearch() }
-        foundTracksView.adapter = SearchErrorAdapter(
+        recyclerView.adapter = SearchErrorAdapter(
             SearchError(getString(R.string.errorNetworkError), getDrawable(R.drawable.network_error),getString(R.string.errorPageBtnTextUpdate), onClick)
         )
+        recyclerView.visibility = View.VISIBLE
         val updateButton = findViewById<Button>(R.id.errorPageBtn)
     }
 
+
     private fun setHistoryVisibility(visible:Boolean) {
 
-        val historyHeader = findViewById<TextView>(R.id.searchHistoryHeader)
-        val clearHistoryButton = findViewById<Button>(R.id.btnClearSearchHistory)
+        val historyGroup = findViewById<Group>(R.id.searchHistoryGroup)
         val history = history
         if (visible && ((history != null) && (history.curSize > 0))) {
-            historyHeader.visibility = View.VISIBLE
-            clearHistoryButton.visibility = View.VISIBLE
+            historyGroup.visibility = View.VISIBLE
             reDrawHistory()
+            recyclerView.visibility = View.VISIBLE
         } else {
-            historyHeader.visibility = View.GONE
-            clearHistoryButton.visibility = View.GONE
+            historyGroup.visibility = View.GONE
+            recyclerView.visibility = View.GONE
         }
         historyVisible = visible
 
     }
 
     private fun reDrawHistory() {
-        val foundTracksView = findViewById<RecyclerView>(R.id.searchRecycler)
         val history = history
         if (history != null) {
-            foundTracksView.adapter = TrackAdapter(history.get(), onTrackClick)
+            recyclerView.adapter = TrackAdapter(history.get(), onTrackClick)
         }
     }
 

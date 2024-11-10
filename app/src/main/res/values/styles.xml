@@ -73,7 +73,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:drawableStart">@drawable/search2</item>
-        <item name="android:background">@drawable/rounded_edit_text</item>
+        <item name="android:background">@drawable/rounded_card</item>
         <item name="android:paddingVertical">8dp</item>
         <item name="android:paddingHorizontal">16dp</item>
         <item name="android:layout_marginHorizontal">12dp</item>
@@ -157,13 +157,21 @@
     </style>
 
     <style name="PlayerText" parent="AppFontFamilyBold">
-        <item name="android:textAlignment">center</item>
+        <item name="android:textAlignment">textStart</item>
         <item name="android:textSize">14sp</item>
+        <item name="singleLine">true</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="PlayerDetailsText" parent="AppFontFamily">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="singleLine">true</item>
+        <item name="android:maxLines">1</item>
     </style>
 
+    <style name="PlayerArtwork" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
 </resources>
