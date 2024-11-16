@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:theme="@style/Theme.PlaylistMakerSecondary"
     android:background="?attr/colorSecondary"
-    tools:context=".AudioPlayer">
+    tools:context=".AudioPlayerActivity">
 
     <TextView
         android:id="@+id/btnBackFromPlayer"
@@ -55,23 +55,25 @@
 
     <TextView
         android:id="@+id/trackName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/albumImageFrame"
+        app:layout_constraintEnd_toEndOf="@id/endGuideLine"
         app:layout_constraintStart_toStartOf="@id/startGuideLine"
         android:layout_marginTop="22dp"
         style="@style/PlayerText"
         android:textSize="24sp"
-        tools:text="Yesterday"/> <!--  song name  -->
+        tools:text="Yesterday fsdafa sajdjasdjka kdaskdlka as kdlaskd" /> <!--  song name  -->
     <TextView
         android:id="@+id/artistName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/trackName"
+        app:layout_constraintEnd_toEndOf="@id/endGuideLine"
         app:layout_constraintStart_toStartOf="@id/startGuideLine"
         android:layout_marginTop="12dp"
         style="@style/PlayerText"
-        tools:text="The Beatles"/> <!--  artist name  -->
+        tools:text="The Beatles daslkdhjlas dkljas kldjsak d jsaldjd lkasj dkdj asj dla djalskj" /> <!--  artist name  -->
     <ImageView
         android:id="@+id/btnPlayPause"
         android:layout_width="wrap_content"
@@ -107,7 +109,7 @@
         app:layout_constraintStart_toStartOf="@id/startGuideLine"
         app:layout_constraintEnd_toEndOf="@id/endGuideLine"
         android:layout_marginTop="4dp"
-        android:text="0:00"
+        android:text="00:00"
         style="@style/PlayerText"
         /> <!--  played time  -->
     <androidx.constraintlayout.widget.Guideline
@@ -144,7 +146,8 @@
         android:textColor="@color/grey"/> <!--  details duration label  -->
     <TextView
         android:id="@+id/detailsDurationValue"
-        android:layout_width="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/detailsDurationGroup"
         app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
@@ -165,21 +168,27 @@
         android:id="@+id/detailsAlbumLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/detailsAlbumGroup"
+        app:layout_constraintTop_toTopOf="@id/detailsAlbumGroup"
         app:layout_constraintStart_toEndOf="@id/detailsStartGuideLine"
+        app:layout_constraintEnd_toStartOf="@id/detailsAlbumValue"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         android:text="@string/trackDetailsAlbumLabel"
         android:paddingVertical="8dp"
         style="@style/PlayerDetailsText"
         android:textColor="@color/grey"/> <!--  details Album label  -->
     <TextView
         android:id="@+id/detailsAlbumValue"
-        android:layout_width="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/detailsAlbumGroup"
         app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@id/detailsAlbumLabel"
         android:paddingVertical="8dp"
+        android:textAlignment="textEnd"
         style="@style/PlayerDetailsText"
-        tools:text="Yesterday"/> <!--  details Album  -->
+        tools:text="Yesterdayfds fsadfas dsafasdf sadfasdf fsdafasdfsadf fsdaf sdfasdf fsdafasdf"/> <!--  details Album  -->
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/detailsYearGroup"
@@ -202,11 +211,12 @@
         android:textColor="@color/grey"/> <!--  details Year label  -->
     <TextView
         android:id="@+id/detailsYearValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/detailsYearGroup"
         app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
         android:paddingVertical="8dp"
+        android:textAlignment="textEnd"
         style="@style/PlayerDetailsText"
         tools:text="2009"/> <!--  details duration  -->
 
@@ -225,17 +235,21 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/detailsGenreGroup"
         app:layout_constraintStart_toEndOf="@id/detailsStartGuideLine"
+        app:layout_constraintEnd_toStartOf="@id/detailsGenreValue"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         android:text="@string/trackDetailsGenreLabel"
         android:paddingVertical="8dp"
         style="@style/PlayerDetailsText"
         android:textColor="@color/grey"/> <!--  details Genre label  -->
     <TextView
         android:id="@+id/detailsGenreValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/detailsGenreGroup"
         app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
+        app:layout_constraintStart_toEndOf="@id/detailsGenreLabel"
         android:paddingVertical="8dp"
+        android:textAlignment="textEnd"
         style="@style/PlayerDetailsText"
         tools:text="Rock"/> <!--  details Genre  -->
 
@@ -254,17 +268,21 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/detailsCountryGroup"
         app:layout_constraintStart_toEndOf="@id/detailsStartGuideLine"
+        app:layout_constraintEnd_toStartOf="@id/detailsCountryValue"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         android:text="@string/trackDetailsCountryLabel"
         android:paddingVertical="8dp"
         style="@style/PlayerDetailsText"
         android:textColor="@color/grey"/> <!--  details Country label  -->
     <TextView
         android:id="@+id/detailsCountryValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/detailsCountryGroup"
+        app:layout_constraintStart_toEndOf="@id/detailsCountryLabel"
         app:layout_constraintEnd_toEndOf="@id/detailsEndGuideLine"
         android:paddingVertical="8dp"
+        android:textAlignment="textEnd"
         style="@style/PlayerDetailsText"
         tools:text="Великобритания"/> <!--  details Country  -->
 </androidx.constraintlayout.widget.ConstraintLayout>

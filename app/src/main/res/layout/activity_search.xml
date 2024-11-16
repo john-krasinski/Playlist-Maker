@@ -8,48 +8,56 @@
     android:background="?attr/colorSecondary"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    <TextView
+        android:id="@+id/btnBackFromSearch"
+        style="@style/HeaderText"
+        android:layout_gravity="start|center_vertical"
+        android:drawableLeft="@drawable/arrow_left"
+        android:text="@string/searchHeader"
+        android:textAlignment="textStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/searchBox"
+        style="@style/SearchBox"
+        android:layout_weight="1"
+        android:hint="@string/SearchBoxHint"
+        android:inputType="text"
+        android:lines="1"
+        app:layout_constraintTop_toBottomOf="@id/btnBackFromSearch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    <ImageView
+        android:id="@+id/searchBoxClearIcon"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/btnBackFromSearch"
-            style="@style/HeaderText"
-            android:layout_gravity="start|center_vertical"
-            android:text="@string/searchHeader"
-            android:textAlignment="textStart"
-            android:drawableLeft="@drawable/arrow_left"/>
-
-    </LinearLayout>
-
-    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/searchBox"
-                style="@style/SearchBox"
-                android:layout_weight="1"
-                android:hint="@string/SearchBoxHint"
-                android:inputType="text"
-                android:lines="1" />
-
-            <ImageView
-                android:id="@+id/searchBoxClearIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginRight="28dp"
-                android:background="?attr/colorPrimaryVariant"
-                android:src="@drawable/clear"
-                android:visibility="gone"
-                />
-        </FrameLayout>
+        android:background="?attr/colorPrimaryVariant"
+        android:src="@drawable/clear"
+        android:visibility="gone"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@id/searchBox"
+        app:layout_constraintTop_toTopOf="@id/searchBox"
+        app:layout_constraintBottom_toBottomOf="@id/searchBox"
+        tools:visibility="visible"
+        />
+    <ProgressBar
+        android:id="@+id/progressSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintTop_toBottomOf="@id/searchBox"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.3"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/searchHistoryGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="searchHistoryHeader, btnClearSearchHistory"/>
     <TextView
         android:id="@+id/searchHistoryHeader"
         android:layout_width="match_parent"
@@ -64,24 +72,29 @@
         android:layout_marginBottom="8dp"
         android:textColor="?attr/colorOnSecondary"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/searchBox"
         tools:visibility="visible"
         />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchRecycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@id/searchHistoryHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnClearSearchHistory"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     <Button
         android:id="@+id/btnClearSearchHistory"
         android:text="@string/ClearSearchHistoryButtonText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         style="@style/ButtonClearSearchHistory"
         tools:visibility="visible"/>
-</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

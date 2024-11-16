@@ -9,5 +9,6 @@ data class Track(
     val artworkUrl: String,
     val country: String,
     val genre: String,
-    val year: String
+    val year: String,
+    val previewUrl: String
 )

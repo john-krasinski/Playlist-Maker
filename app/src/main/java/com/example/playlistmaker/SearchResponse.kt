@@ -14,5 +14,6 @@ data class ResponseTrackInfo(
     val artworkUrl100: String,
     val country: String,
     val primaryGenreName: String,
-    val releaseDate: String
+    val releaseDate: String,
+    val previewUrl: String
 )
