@@ -1,10 +1,12 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.track_search
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
 
 class TrackViewHolder(val item: View, private val onClick: ((Track) -> Unit?)?) : RecyclerView.ViewHolder(item) {
     private val cover: ImageView = item.findViewById(R.id.foundTrackCover)

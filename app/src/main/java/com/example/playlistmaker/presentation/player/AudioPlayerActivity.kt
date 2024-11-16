@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.player
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -12,6 +12,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.ALBUM_NAME_KEY
+import com.example.playlistmaker.ARTIST_NAME_KEY
+import com.example.playlistmaker.ARTWORK_URL_KEY
+import com.example.playlistmaker.COUNTRY_KEY
+import com.example.playlistmaker.GENRE_KEY
+import com.example.playlistmaker.PREVIEW_URL_KEY
+import com.example.playlistmaker.R
+import com.example.playlistmaker.RELEASE_YEAR_KEY
+import com.example.playlistmaker.TRACK_DURATION_KEY
+import com.example.playlistmaker.TRACK_ID_KEY
+import com.example.playlistmaker.TRACK_NAME_KEY
+import com.example.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 

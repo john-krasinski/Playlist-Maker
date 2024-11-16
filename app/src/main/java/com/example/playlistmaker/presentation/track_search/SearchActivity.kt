@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.track_search
 
 import android.content.Context
 import android.content.Intent
@@ -15,7 +15,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
@@ -23,24 +22,32 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
-import java.util.Locale
+import com.example.playlistmaker.ALBUM_NAME_KEY
+import com.example.playlistmaker.ARTIST_NAME_KEY
+import com.example.playlistmaker.ARTWORK_URL_KEY
+import com.example.playlistmaker.App
+import com.example.playlistmaker.presentation.player.AudioPlayerActivity
+import com.example.playlistmaker.COUNTRY_KEY
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.GENRE_KEY
+import com.example.playlistmaker.PREVIEW_URL_KEY
+import com.example.playlistmaker.R
+import com.example.playlistmaker.RELEASE_YEAR_KEY
+import com.example.playlistmaker.presentation.search_error.SearchErrorAdapter
+import com.example.playlistmaker.domain.impl.SearchHistory
+import com.example.playlistmaker.TRACK_DURATION_KEY
+import com.example.playlistmaker.TRACK_ID_KEY
+import com.example.playlistmaker.TRACK_NAME_KEY
+import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.models.SearchError
+import com.example.playlistmaker.domain.models.Track
 
 const val SEARCH_DEBOUNCE_DELAY_MS: Long = 2000
 
 class SearchActivity : AppCompatActivity() {
 
     var query: String = ""
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    private val searchApi = retrofit.create<SearchApi>()
+
     private var history: SearchHistory? = null
     private var historyVisible = true
 
@@ -52,8 +59,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var inputEditText: EditText
     private lateinit var clearButton: ImageView
     private lateinit var clearHistoryButton: Button
+    private lateinit var progress: ProgressBar
+    private lateinit var historyGroup: Group
 
-    private val onTrackClick = { track:Track ->
+    private val onTrackClick = { track: Track ->
         history?.add(track)
         if (historyVisible) {
             reDrawHistory()
@@ -77,6 +86,8 @@ class SearchActivity : AppCompatActivity() {
         clearButton = findViewById<ImageView>(R.id.searchBoxClearIcon)
         clearHistoryButton = findViewById<Button>(R.id.btnClearSearchHistory)
         recyclerView = findViewById<RecyclerView>(R.id.searchRecycler)
+        progress = findViewById<ProgressBar>(R.id.progressSearch)
+        historyGroup = findViewById<Group>(R.id.searchHistoryGroup)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = TrackAdapter(listOf())
@@ -161,6 +172,7 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.addTextChangedListener(simpleTextWatcher)
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                handler.removeCallbacks(searchRunnable)
                 doSearch(query)
                 true
             }
@@ -179,61 +191,37 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showProgress() {
-        val progress = findViewById<ProgressBar>(R.id.progressSearch)
         setHistoryVisibility(false)
         progress.visibility = View.VISIBLE
     }
 
     private fun hideProgress() {
-        val progress = findViewById<ProgressBar>(R.id.progressSearch)
         progress.visibility = View.GONE
     }
 
     private fun doSearch(text: String) {
 
         showProgress()
+        Creator.provideTracksInteractor().searchTracks(text, object : TracksInteractor.TracksConsumer {
 
-        searchApi.doSearch(text).enqueue(object : Callback<SearchResponse> {
-
-            override fun onResponse(call: Call<SearchResponse>,response: Response<SearchResponse>) {
-
+            override fun onSuccess(foundTracks: List<Track>) {
                 hideProgress()
-
-                if (response.isSuccessful) {
-                    val resp = response.body()
-                    if (resp != null && resp.resultCount > 0 && resp.results.size > 0 ) {
-                        showFoundTracks(resp.results)
-                    } else {
-                        showNotFound()
-                    }
-                } else {
+                if (foundTracks.isEmpty()) {
                     showNotFound()
-                    val errorBody = response.errorBody()
+                } else {
+                    showFoundTracks(foundTracks)
                 }
             }
 
-            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+            override fun onError(message: String) {
                 hideProgress()
                 showNetworkError()
             }
         })
     }
 
-    private fun showFoundTracks(trackInfo: List<ResponseTrackInfo>) {
-        val foundTracks = trackInfo.map {
-            Track(it.trackId,
-                it.trackName,
-                it.artistName,
-                albumName = it.collectionName,
-                trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis),
-                it.artworkUrl100,
-                it.country,
-                it.primaryGenreName,
-                year = it.releaseDate.replaceAfter('-',""),
-                it.previewUrl
-                )
-        }
-        recyclerView.adapter = TrackAdapter(foundTracks, onTrackClick)
+    private fun showFoundTracks(tracks: List<Track>) {
+        recyclerView.adapter = TrackAdapter(tracks, onTrackClick)
         recyclerView.visibility = View.VISIBLE
     }
 
@@ -247,7 +235,9 @@ class SearchActivity : AppCompatActivity() {
     private fun showNetworkError() {
         val onClick = { debounceSearch() }
         recyclerView.adapter = SearchErrorAdapter(
-            SearchError(getString(R.string.errorNetworkError), getDrawable(R.drawable.network_error),getString(R.string.errorPageBtnTextUpdate), onClick)
+            SearchError(getString(R.string.errorNetworkError), getDrawable(R.drawable.network_error),getString(
+                R.string.errorPageBtnTextUpdate
+            ), onClick)
         )
         recyclerView.visibility = View.VISIBLE
         val updateButton = findViewById<Button>(R.id.errorPageBtn)
@@ -255,8 +245,6 @@ class SearchActivity : AppCompatActivity() {
 
 
     private fun setHistoryVisibility(visible:Boolean) {
-
-        val historyGroup = findViewById<Group>(R.id.searchHistoryGroup)
         val history = history
         if (visible && ((history != null) && (history.curSize > 0))) {
             historyGroup.visibility = View.VISIBLE
@@ -267,7 +255,6 @@ class SearchActivity : AppCompatActivity() {
             recyclerView.visibility = View.GONE
         }
         historyVisible = visible
-
     }
 
     private fun reDrawHistory() {

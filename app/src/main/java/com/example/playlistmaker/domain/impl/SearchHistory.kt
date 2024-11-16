@@ -1,6 +1,7 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.domain.impl
 
 import android.content.SharedPreferences
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 
 const val MAX_HISTORY_SIZE = 10
@@ -8,7 +9,8 @@ const val HISTORY_KEY = "SEARCH_HISTORY"
 
 
 class SearchHistory(val sharedPreferences: SharedPreferences,
-                    val maxSize: Int = MAX_HISTORY_SIZE)
+                    val maxSize: Int = MAX_HISTORY_SIZE
+)
 {
     private var items = mutableListOf<Track>()
     public var curSize: Int = 0
