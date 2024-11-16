@@ -2,7 +2,6 @@ package com.example.playlistmaker.presentation.track_search
 
 import android.content.Context
 import android.content.Intent
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -34,10 +33,11 @@ import com.example.playlistmaker.PREVIEW_URL_KEY
 import com.example.playlistmaker.R
 import com.example.playlistmaker.RELEASE_YEAR_KEY
 import com.example.playlistmaker.presentation.search_error.SearchErrorAdapter
-import com.example.playlistmaker.domain.impl.SearchHistory
+import com.example.playlistmaker.data.SearchHistory
 import com.example.playlistmaker.TRACK_DURATION_KEY
 import com.example.playlistmaker.TRACK_ID_KEY
 import com.example.playlistmaker.TRACK_NAME_KEY
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.SearchError
 import com.example.playlistmaker.domain.models.Track
@@ -48,7 +48,7 @@ class SearchActivity : AppCompatActivity() {
 
     var query: String = ""
 
-    private var history: SearchHistory? = null
+    private lateinit var historyInteractor: TracksHistoryInteractor
     private var historyVisible = true
 
     val handler = Handler(Looper.getMainLooper())
@@ -63,9 +63,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyGroup: Group
 
     private val onTrackClick = { track: Track ->
-        history?.add(track)
+        historyInteractor.addTrack(track)
         if (historyVisible) {
-            reDrawHistory()
+            reDrawHistory(historyInteractor.getTracks())
         }
         openTrackInPlayer(track)
     }
@@ -92,14 +92,17 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = TrackAdapter(listOf())
 
-        history = SearchHistory((applicationContext as App).preferences())
+        historyInteractor = Creator.provideHistoryInteractor((applicationContext as App).preferences())
+        if (historyInteractor.getTracks().isEmpty()) {
+            setHistoryVisibility(false)
+        }
 
         backButton.setOnClickListener {
             finish()
         }
 
         clearHistoryButton.setOnClickListener {
-            history?.clear()
+            historyInteractor.clear()
             setHistoryVisibility(false)
         }
 
@@ -245,11 +248,13 @@ class SearchActivity : AppCompatActivity() {
 
 
     private fun setHistoryVisibility(visible:Boolean) {
-        val history = history
-        if (visible && ((history != null) && (history.curSize > 0))) {
-            historyGroup.visibility = View.VISIBLE
-            reDrawHistory()
-            recyclerView.visibility = View.VISIBLE
+        if (visible) {
+            val tracks = historyInteractor.getTracks()
+            if (tracks.isNotEmpty()) {
+                historyGroup.visibility = View.VISIBLE
+                reDrawHistory(tracks)
+                recyclerView.visibility = View.VISIBLE
+            }
         } else {
             historyGroup.visibility = View.GONE
             recyclerView.visibility = View.GONE
@@ -257,11 +262,8 @@ class SearchActivity : AppCompatActivity() {
         historyVisible = visible
     }
 
-    private fun reDrawHistory() {
-        val history = history
-        if (history != null) {
-            recyclerView.adapter = TrackAdapter(history.get(), onTrackClick)
-        }
+    private fun reDrawHistory(tracks: List<Track>) {
+        recyclerView.adapter = TrackAdapter(tracks, onTrackClick)
     }
 
     private fun openTrackInPlayer(track: Track) {

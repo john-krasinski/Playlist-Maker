@@ -1,5 +1,10 @@
 package com.example.playlistmaker.domain.models
 
+import android.icu.text.SimpleDateFormat
+import com.example.playlistmaker.data.dto.LocalHistoryTrackDto
+import com.example.playlistmaker.data.dto.ResponseTrackDto
+import java.util.Locale
+
 data class Track(
     val trackId: Int,
     val trackName: String,
@@ -11,4 +16,56 @@ data class Track(
     val genre: String,
     val year: String,
     val previewUrl: String
-)
+) {
+
+    companion object {
+        
+        fun from(src: ResponseTrackDto): Track {
+            return Track(
+                trackId = src.trackId,
+                trackName = src.trackName,
+                artistName = src.artistName,
+                albumName = src.collectionName,
+                trackTime = SimpleDateFormat(
+                    "mm:ss",
+                    Locale.getDefault()
+                ).format(src.trackTimeMillis),
+                artworkUrl = src.artworkUrl100,
+                country = src.country,
+                genre = src.primaryGenreName,
+                year = src.releaseDate.replaceAfter('-', ""),
+                previewUrl = src.previewUrl
+            )
+        }
+
+        fun from(src: LocalHistoryTrackDto): Track {
+            return Track(
+                trackId = src.trackId,
+                trackName = src.trackName,
+                trackTime = src.trackTime,
+                artistName = src.artistName,
+                year = src.year,
+                artworkUrl = src.artworkUrl,
+                country = src.country,
+                previewUrl = src.previewUrl,
+                albumName = src.albumName,
+                genre = src.genre
+            )
+        }
+    }
+
+    fun into(): LocalHistoryTrackDto {
+        return LocalHistoryTrackDto(
+            trackId = this.trackId,
+            trackName = this.trackName,
+            trackTime = this.trackTime,
+            artistName = this.artistName,
+            year = this.year,
+            artworkUrl = this.artworkUrl,
+            country = this.country,
+            previewUrl = this.previewUrl,
+            albumName = this.albumName,
+            genre = this.genre)
+    }
+
+}

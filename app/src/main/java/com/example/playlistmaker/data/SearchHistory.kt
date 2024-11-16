@@ -1,6 +1,7 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.data
 
 import android.content.SharedPreferences
+import com.example.playlistmaker.data.dto.LocalHistoryTrackDto
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 
@@ -12,7 +13,7 @@ class SearchHistory(val sharedPreferences: SharedPreferences,
                     val maxSize: Int = MAX_HISTORY_SIZE
 )
 {
-    private var items = mutableListOf<Track>()
+    private var items = mutableListOf<LocalHistoryTrackDto>()
     public var curSize: Int = 0
         get() {
             return items.size
@@ -27,16 +28,29 @@ class SearchHistory(val sharedPreferences: SharedPreferences,
         }
     }
 
-    public fun add(track: Track) {
+    private fun save() {
+        val historyJson = Gson().toJson(items)
+        sharedPreferences.edit().putString(HISTORY_KEY, historyJson).apply()
+    }
+
+    private fun load() {
+        val history = Gson().fromJson(sharedPreferences.getString(HISTORY_KEY, ""), Array<LocalHistoryTrackDto>::class.java)
+        items.clear()
+        if (history != null) {
+            items.addAll(history.take(10))
+        }
+    }
+
+    public fun add(track: LocalHistoryTrackDto) {
         remove(track)
         if (items.size >= MAX_HISTORY_SIZE) {
-            items = items.take(9) as MutableList<Track>
+            items = items.take(9) as MutableList<LocalHistoryTrackDto>
         }
         items.add(0, track)
         save()
     }
 
-    public fun remove(track: Track) {
+    public fun remove(track: LocalHistoryTrackDto) {
         for (i in 0..<items.size) {
             if (items[i].trackId == track.trackId) {
                 items.removeAt(i)
@@ -50,20 +64,9 @@ class SearchHistory(val sharedPreferences: SharedPreferences,
         save()
     }
 
-    fun save() {
-        val historyJson = Gson().toJson(items)
-        sharedPreferences.edit().putString(HISTORY_KEY, historyJson).apply()
-    }
 
-    fun load() {
-        val history = Gson().fromJson(sharedPreferences.getString(HISTORY_KEY, ""), Array<Track>::class.java)
-        items.clear()
-        if (history != null) {
-            items.addAll(history.take(10))
-        }
-    }
 
-    public fun get(): List<Track> {
+    public fun get(): List<LocalHistoryTrackDto> {
         return items
     }
 }

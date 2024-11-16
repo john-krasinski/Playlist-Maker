@@ -16,21 +16,7 @@ class TracksRepositoryImpl(private val apiClient: ApiClient): TracksRepository {
             val foundTracks = resp as TrackSearchResponse
             if (foundTracks.resultCount > 0 && foundTracks.results.isNotEmpty()) {
                 val tracks = foundTracks.results.map {
-                    Track(
-                        trackId = it.trackId,
-                        trackName = it.trackName,
-                        artistName = it.artistName,
-                        albumName = it.collectionName,
-                        trackTime = SimpleDateFormat(
-                            "mm:ss",
-                            Locale.getDefault()
-                        ).format(it.trackTimeMillis),
-                        artworkUrl = it.artworkUrl100,
-                        country = it.country,
-                        genre = it.primaryGenreName,
-                        year = it.releaseDate.replaceAfter('-', ""),
-                        previewUrl = it.previewUrl
-                    )
+                    Track.from(it)
                 }
                 onSuccess.invoke(tracks)
             } else {
