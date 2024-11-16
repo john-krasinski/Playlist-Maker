@@ -43,16 +43,4 @@ class RetrofitApiClient: ApiClient {
             onError.invoke("Bad request")
         }
     }
-
-//    override fun doRequest(dto: Any): ApiResponse {
-//
-//        if (dto is TrackSearchRequest) {
-//            val resp = searchApi.doSearch(dto.query).execute()
-//            val body = resp.body() ?: ApiResponse()
-//            body.resultCode = resp.code()
-//            return body
-//        } else {
-//            return ApiResponse().apply { resultCode = 400 }
-//        }
-//    }
 }
