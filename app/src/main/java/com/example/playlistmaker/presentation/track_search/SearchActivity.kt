@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.ALBUM_NAME_KEY
 import com.example.playlistmaker.ARTIST_NAME_KEY
 import com.example.playlistmaker.ARTWORK_URL_KEY
-import com.example.playlistmaker.App
 import com.example.playlistmaker.presentation.player.AudioPlayerActivity
 import com.example.playlistmaker.COUNTRY_KEY
 import com.example.playlistmaker.Creator
@@ -33,7 +32,6 @@ import com.example.playlistmaker.PREVIEW_URL_KEY
 import com.example.playlistmaker.R
 import com.example.playlistmaker.RELEASE_YEAR_KEY
 import com.example.playlistmaker.presentation.search_error.SearchErrorAdapter
-import com.example.playlistmaker.data.SearchHistory
 import com.example.playlistmaker.TRACK_DURATION_KEY
 import com.example.playlistmaker.TRACK_ID_KEY
 import com.example.playlistmaker.TRACK_NAME_KEY
@@ -92,7 +90,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = TrackAdapter(listOf())
 
-        historyInteractor = Creator.provideHistoryInteractor((applicationContext as App).preferences())
+        historyInteractor = Creator.provideHistoryInteractor(this)
         if (historyInteractor.getTracks().isEmpty()) {
             setHistoryVisibility(false)
         }
