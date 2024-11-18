@@ -26,6 +26,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Creator.setAppContext(this)
         useDarkTheme = settings().isDarkThemeEnabled()
         toggleDarkTheme(useDarkTheme)
     }
@@ -44,6 +45,6 @@ class App : Application() {
     }
 
     public fun settings(): AppSettingsInteractor {
-        return Creator.provideAppSettingsInteractor(this)
+        return Creator.provideAppSettingsInteractor()
     }
 }

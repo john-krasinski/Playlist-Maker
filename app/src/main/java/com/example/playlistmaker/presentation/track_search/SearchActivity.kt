@@ -90,7 +90,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = TrackAdapter(listOf())
 
-        historyInteractor = Creator.provideHistoryInteractor(this)
+        historyInteractor = Creator.provideHistoryInteractor()
         if (historyInteractor.getTracks().isEmpty()) {
             setHistoryVisibility(false)
         }

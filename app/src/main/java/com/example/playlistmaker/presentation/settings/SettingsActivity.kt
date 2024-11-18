@@ -32,7 +32,7 @@ class SettingsActivity : AppCompatActivity() {
         val supportButton = findViewById<View>(R.id.btnSupport)
         val userAgreeButton = findViewById<View>(R.id.btnUserAgreement)
 
-        val remoteActions = Creator.provideAppRemoteActionsInteractor(this)
+        val remoteActions = Creator.provideAppRemoteActionsInteractor()
 
         backButton.setOnClickListener {
             finish()

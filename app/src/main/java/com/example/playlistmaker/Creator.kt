@@ -1,7 +1,6 @@
 package com.example.playlistmaker
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.example.playlistmaker.data.AppRemoteActionsProviderImpl
 import com.example.playlistmaker.data.AppSettingsProviderImpl
 import com.example.playlistmaker.data.LocalTracksHistoryRepositoryImpl
@@ -22,6 +21,11 @@ import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 
 object Creator {
 
+    private lateinit var appContext: Context
+    fun setAppContext(context: Context) {
+        appContext = context
+    }
+
     private fun getTracksRepository(): TracksRepository {
         return TracksRepositoryImpl(RetrofitApiClient())
     }
@@ -32,21 +36,21 @@ object Creator {
     private fun getHistoryRepository(context: Context): TracksHistoryRepository {
         return LocalTracksHistoryRepositoryImpl(context)
     }
-    fun provideHistoryInteractor(context: Context): TracksHistoryInteractor {
-        return TracksHistoryInteractorImpl(getHistoryRepository(context))
+    fun provideHistoryInteractor(): TracksHistoryInteractor {
+        return TracksHistoryInteractorImpl(getHistoryRepository(appContext))
     }
 
     private fun getAppSettingsProvider(context: Context): AppSettingsProvider {
         return AppSettingsProviderImpl(context)
     }
-    fun provideAppSettingsInteractor(context: Context): AppSettingsInteractor {
-        return AppSettingsInteractorImpl(getAppSettingsProvider(context))
+    fun provideAppSettingsInteractor(): AppSettingsInteractor {
+        return AppSettingsInteractorImpl(getAppSettingsProvider(appContext))
     }
 
     private fun getAppRemoteActionsProvider(context: Context): AppRemoteActionsProvider {
         return AppRemoteActionsProviderImpl(context)
     }
-    fun provideAppRemoteActionsInteractor(context: Context): AppRemoteActionsInteractor {
-        return AppRemoteActionsInteractorImpl(getAppRemoteActionsProvider(context))
+    fun provideAppRemoteActionsInteractor(): AppRemoteActionsInteractor {
+        return AppRemoteActionsInteractorImpl(getAppRemoteActionsProvider(appContext))
     }
 }
