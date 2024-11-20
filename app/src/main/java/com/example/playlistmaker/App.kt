@@ -1,11 +1,11 @@
 package com.example.playlistmaker
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.domain.api.AppSettingsInteractor
+
 
 const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
-const val USE_DARK_THEME_KEY = "use_dark_theme"
 
 const val TRACK_NAME_KEY = "track_name"
 const val TRACK_ID_KEY = "track_id"
@@ -26,7 +26,8 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        useDarkTheme = preferences().getBoolean(USE_DARK_THEME_KEY,false)
+        Creator.setAppContext(this)
+        useDarkTheme = settings().isDarkThemeEnabled()
         toggleDarkTheme(useDarkTheme)
     }
 
@@ -40,14 +41,10 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
         )
 
-        preferences()
-            .edit()
-            .putBoolean(USE_DARK_THEME_KEY, useDarkTheme)
-            .apply()
-
+        settings().toggleDarkTheme(useDarkTheme)
     }
 
-    public fun preferences(): SharedPreferences {
-        return getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+    public fun settings(): AppSettingsInteractor {
+        return Creator.provideAppSettingsInteractor()
     }
 }

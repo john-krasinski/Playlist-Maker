@@ -1,11 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.dto
 
-data class SearchResponse(
-    val resultCount: Int,
-    val results: ArrayList<ResponseTrackInfo>
-)
-
-data class ResponseTrackInfo(
+data class ResponseTrackDto(
     val trackId: Int,
     val trackName: String,
     val artistName: String,

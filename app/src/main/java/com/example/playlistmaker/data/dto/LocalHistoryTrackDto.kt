@@ -1,6 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.dto
 
-data class Track(
+data class LocalHistoryTrackDto(
     val trackId: Int,
     val trackName: String,
     val artistName: String,

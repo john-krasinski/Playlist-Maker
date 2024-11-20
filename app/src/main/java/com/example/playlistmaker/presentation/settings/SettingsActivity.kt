@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.settings
 
 import android.content.Intent
 import android.net.Uri
@@ -8,6 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.App
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 
@@ -29,6 +32,8 @@ class SettingsActivity : AppCompatActivity() {
         val supportButton = findViewById<View>(R.id.btnSupport)
         val userAgreeButton = findViewById<View>(R.id.btnUserAgreement)
 
+        val remoteActions = Creator.provideAppRemoteActionsInteractor()
+
         backButton.setOnClickListener {
             finish()
         }
@@ -39,32 +44,15 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         shareButton.setOnClickListener {
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.ShareAppMessage))
-                type = "text/plain"
-            }
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            startActivity(shareIntent)
+            remoteActions.shareApp()
         }
 
         supportButton.setOnClickListener {
-            val sendIntent: Intent =  Intent().apply {
-                action = Intent.ACTION_SENDTO
-                data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, getString(R.string.SupportEmail))
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.SupportMessageText))
-                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.SupportMessageHeader))
-            }
-            startActivity(sendIntent)
+            remoteActions.contactSupport()
         }
 
         userAgreeButton.setOnClickListener {
-            val sendIntent: Intent =  Intent().apply {
-                action = Intent.ACTION_VIEW
-                data = Uri.parse(getString(R.string.LicenseUrl))
-            }
-            startActivity(sendIntent)
+            remoteActions.readUserAgreement()
         }
     }
 }

@@ -1,33 +1,13 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.search_error
 
-import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
-import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.SearchError
 
-class SearchErrorAdapter(
-    private val error: SearchError
-) : RecyclerView.Adapter<SearchErrorViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchErrorViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.error_page, parent, false)
-        return SearchErrorViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: SearchErrorViewHolder, position: Int) {
-        holder.bind(error)
-    }
-
-    override fun getItemCount(): Int {
-        return 1
-    }
-}
 
 class SearchErrorViewHolder(item: View) : RecyclerView.ViewHolder(item) {
     private val message: TextView = item.findViewById(R.id.errorPageMsg)
@@ -49,10 +29,3 @@ class SearchErrorViewHolder(item: View) : RecyclerView.ViewHolder(item) {
         }
     }
 }
-
-data class SearchError(
-    val message: String,
-    val image: Drawable?,
-    val buttonText: String?,
-    val buttonOnClick: (() -> Unit)?
-)
