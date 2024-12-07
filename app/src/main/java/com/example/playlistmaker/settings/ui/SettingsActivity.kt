@@ -2,17 +2,23 @@ package com.example.playlistmaker.settings.ui
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.App
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : ComponentActivity() {
+
+    private lateinit var settingsViewModel: SettingsViewModel
+    private lateinit var ui: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,33 +30,33 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        val backButton = findViewById<View>(R.id.btnBackFromSettings)
-        val darkThemeButton = findViewById<SwitchMaterial>(R.id.btnToggleDarkTheme)
-        val shareButton = findViewById<View>(R.id.btnShare)
-        val supportButton = findViewById<View>(R.id.btnSupport)
-        val userAgreeButton = findViewById<View>(R.id.btnUserAgreement)
+        ui = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(ui.root)
 
-        val remoteActions = Creator.provideAppRemoteActionsInteractor()
+        settingsViewModel = ViewModelProvider(this, SettingsViewModel.factory(application))[SettingsViewModel::class.java]
+        settingsViewModel.isDarkThemeEnabled().observe(this) { isEnabled ->
+            ui.btnToggleDarkTheme.isChecked = isEnabled
+        }
 
-        backButton.setOnClickListener {
+        ui.btnBackFromSettings.setOnClickListener {
             finish()
         }
 
-        darkThemeButton.isChecked = App.useDarkTheme
-        darkThemeButton.setOnCheckedChangeListener { btn, isChecked ->
-            (applicationContext as App).toggleDarkTheme(isChecked)
+//        ui.btnToggleDarkTheme.isChecked = App.useDarkTheme
+        ui.btnToggleDarkTheme.setOnCheckedChangeListener { btn, isChecked ->
+            settingsViewModel.toggleDarkTheme(isChecked)
         }
 
-        shareButton.setOnClickListener {
-            remoteActions.shareApp()
+        ui.btnShare.setOnClickListener {
+            settingsViewModel.shareApp()
         }
 
-        supportButton.setOnClickListener {
-            remoteActions.contactSupport()
+        ui.btnSupport.setOnClickListener {
+            settingsViewModel.contactSupport()
         }
 
-        userAgreeButton.setOnClickListener {
-            remoteActions.readUserAgreement()
+        ui.btnUserAgreement.setOnClickListener {
+            settingsViewModel.readUserAgreement()
         }
     }
 }

@@ -32,7 +32,7 @@ class App : Application() {
         toggleDarkTheme(useDarkTheme)
     }
 
-    public fun toggleDarkTheme(paramUseDarkTheme: Boolean) {
+    fun toggleDarkTheme(paramUseDarkTheme: Boolean) {
         useDarkTheme = paramUseDarkTheme
 
         AppCompatDelegate.setDefaultNightMode(
@@ -45,7 +45,7 @@ class App : Application() {
         settings().toggleDarkTheme(useDarkTheme)
     }
 
-    public fun settings(): SettingsInteractor {
+    fun settings(): SettingsInteractor {
         return Creator.provideAppSettingsInteractor()
     }
 }
