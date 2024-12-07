@@ -2,7 +2,8 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.domain.api.AppSettingsInteractor
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.settings.domain.api.SettingsInteractor
 
 
 const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
@@ -44,7 +45,7 @@ class App : Application() {
         settings().toggleDarkTheme(useDarkTheme)
     }
 
-    public fun settings(): AppSettingsInteractor {
+    public fun settings(): SettingsInteractor {
         return Creator.provideAppSettingsInteractor()
     }
 }
