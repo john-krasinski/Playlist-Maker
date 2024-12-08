@@ -1,16 +1,13 @@
 package com.example.playlistmaker.player.ui
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.ALBUM_NAME_KEY
 import com.example.playlistmaker.ARTIST_NAME_KEY
@@ -23,32 +20,26 @@ import com.example.playlistmaker.RELEASE_YEAR_KEY
 import com.example.playlistmaker.TRACK_DURATION_KEY
 import com.example.playlistmaker.TRACK_ID_KEY
 import com.example.playlistmaker.TRACK_NAME_KEY
+import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-enum class PlayerState {
-Default, Prepared, Playing, Paused
-}
-
 const val POSITION_UPDATE_INTERVAL_MS: Long = 300
 
-class AudioPlayerActivity : AppCompatActivity() {
+class AudioPlayerActivity : ComponentActivity() {
 
-    var isLiked = false
-    var isAddedToPlaylist = false
+    private var isLiked = false
+    private var isAddedToPlaylist = false
 
-    val mediaPlayer = MediaPlayer()
-    var playerState = PlayerState.Default
-    var currentPosition: Int = 0
-
-    lateinit var timePlayed: TextView
-    lateinit var btnPlayPause: ImageView
+    private lateinit var player: PlayerViewModel
+    private lateinit var ui: ActivityAudioPlayerBinding
 
     val handler = Handler(Looper.getMainLooper())
-    val updateTimeRunnable = object: Runnable {
+    private val updateTimeRunnable = object: Runnable {
         override fun run() {
-            timePlayed.text =  SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+            ui.timePlayed.text =  SimpleDateFormat("mm:ss", Locale.getDefault())
+                .format(player.position())
             handler.postDelayed(this, POSITION_UPDATE_INTERVAL_MS)
         }
     }
@@ -64,52 +55,65 @@ class AudioPlayerActivity : AppCompatActivity() {
             insets
         }
 
-        var currentTrack = getCurrentTrack()
+        val currentTrack = getCurrentTrack()
 
-        val btnBack = findViewById<View>(R.id.btnBackFromPlayer)
-        val artwork = findViewById<ImageView>(R.id.albumImage)
-        val trackName = findViewById<TextView>(R.id.trackName)
-        val artistName = findViewById<TextView>(R.id.artistName)
-        btnPlayPause = findViewById<ImageView>(R.id.btnPlayPause)
-        val btnLike = findViewById<ImageView>(R.id.btnLike)
-        val btnPlaylist = findViewById<ImageView>(R.id.btnAddToPlaylist)
-        timePlayed = findViewById<TextView>(R.id.timePlayed)
-        val trackDuration = findViewById<TextView>(R.id.detailsDurationValue)
-        val albumName = findViewById<TextView>(R.id.detailsAlbumValue)
-        val trackYear = findViewById<TextView>(R.id.detailsYearValue)
-        val trackGenre = findViewById<TextView>(R.id.detailsGenreValue)
-        val trackCountry = findViewById<TextView>(R.id.detailsCountryValue)
+        player = ViewModelProvider(
+            this,
+            PlayerViewModel.factory(currentTrack)
+        )[PlayerViewModel::class.java]
 
-        trackName.text = currentTrack.trackName
-        artistName.text = currentTrack.artistName
-        trackDuration.text = currentTrack.trackTime
-        albumName.text = currentTrack.albumName
-        trackYear.text = currentTrack.year
-        trackGenre.text = currentTrack.genre
-        trackCountry.text = currentTrack.country
+        ui = ActivityAudioPlayerBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        player.curState().observe(this) { state ->
+            when (state) {
+                PlayerState.Prepared -> {
+                    ui.btnPlayPause.isEnabled = true
+                    ui.btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
+                    ui.timePlayed.text = "00:00"
+                    handler.removeCallbacks(updateTimeRunnable)
+                }
+                PlayerState.Playing -> {
+                    ui.btnPlayPause.setImageDrawable(getDrawable(R.drawable.pause))
+                    handler.post(updateTimeRunnable)
+                }
+                PlayerState.Paused -> {
+                    ui.btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
+                    handler.removeCallbacks(updateTimeRunnable)
+                }
+                else -> {}
+            }
+        }
+
+        ui.trackName.text = currentTrack.trackName
+        ui.artistName.text = currentTrack.artistName
+        ui.detailsDurationValue.text = currentTrack.trackTime
+        ui.detailsAlbumValue.text = currentTrack.albumName
+        ui.detailsYearValue.text = currentTrack.year
+        ui.detailsGenreValue.text = currentTrack.genre
+        ui.detailsCountryValue.text = currentTrack.country
 
         if (currentTrack.artworkUrl.isNotEmpty()) {
-            Glide.with(artwork.context)
+            Glide.with(ui.albumImage.context)
                 .load(currentTrack.artworkUrl)
                 .placeholder(R.drawable.player_album_placeholder)
                 .fitCenter()
                 .centerCrop()
-                .into(artwork)
+                .into(ui.albumImage)
         }
 
-        btnBack.setOnClickListener {
+        ui.btnBackFromPlayer.setOnClickListener {
             finish()
         }
 
-        btnPlayPause.isEnabled = false
-        btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
-        btnPlayPause.setOnClickListener {
-            playbackControl()
+        ui.btnPlayPause.isEnabled = false
+        ui.btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
+        ui.btnPlayPause.setOnClickListener {
+            player.playbackControl()
         }
-        preparePlayer(currentTrack.previewUrl)
 
-        btnLike.setOnClickListener {
-            btnLike.setImageDrawable(
+        ui.btnLike.setOnClickListener {
+            ui.btnLike.setImageDrawable(
                 if (isLiked) {
                     getDrawable(R.drawable.like_empty)
                 } else {
@@ -119,8 +123,8 @@ class AudioPlayerActivity : AppCompatActivity() {
             isLiked = !isLiked
         }
 
-        btnPlaylist.setOnClickListener {
-            btnPlaylist.setImageDrawable(
+        ui.btnAddToPlaylist.setOnClickListener {
+            ui.btnAddToPlaylist.setImageDrawable(
                 if (isAddedToPlaylist) {
                     getDrawable(R.drawable.add)
                 } else {
@@ -133,15 +137,15 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     }
 
+
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        player.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(updateTimeRunnable)
-        mediaPlayer.release()
     }
 
     private fun getCurrentTrack(): Track {
@@ -157,47 +161,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         val previewUrl = intent.getStringExtra(PREVIEW_URL_KEY) ?: ""
 
         return Track(trackId,trackName,artistName,albumName,trackTime,artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),country,genre,year,previewUrl)
-    }
-
-    private fun preparePlayer(sourceUrl: String) {
-        mediaPlayer.setDataSource(sourceUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            btnPlayPause.isEnabled = true
-            playerState = PlayerState.Prepared
-        }
-        mediaPlayer.setOnCompletionListener {
-            btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
-            playerState = PlayerState.Prepared
-            timePlayed.text = "00:00"
-            handler.removeCallbacks(updateTimeRunnable)
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        btnPlayPause.setImageDrawable(getDrawable(R.drawable.pause))
-        playerState = PlayerState.Playing
-        handler.post(updateTimeRunnable)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        btnPlayPause.setImageDrawable(getDrawable(R.drawable.play))
-        playerState = PlayerState.Paused
-        handler.removeCallbacks(updateTimeRunnable)
-    }
-
-    private fun playbackControl() {
-        when(playerState) {
-            PlayerState.Playing -> {
-                pausePlayer()
-            }
-            PlayerState.Prepared, PlayerState.Paused -> {
-                startPlayer()
-            }
-            PlayerState.Default -> {}
-        }
     }
 
 }
