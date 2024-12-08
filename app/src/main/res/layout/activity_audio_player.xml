@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:theme="@style/Theme.PlaylistMakerSecondary"
     android:background="?attr/colorSecondary"
-    tools:context=".presentation.player.AudioPlayerActivity">
+    tools:context=".player.ui.AudioPlayerActivity">
 
     <TextView
         android:id="@+id/btnBackFromPlayer"
