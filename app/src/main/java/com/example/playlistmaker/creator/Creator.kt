@@ -22,6 +22,7 @@ import com.example.playlistmaker.search.domain.impl.TracksInteractorImpl
 object Creator {
 
     private lateinit var appContext: Context
+
     fun setAppContext(context: Context) {
         appContext = context
     }
@@ -47,10 +48,10 @@ object Creator {
         return SettingsInteractorImpl(getAppSettingsProvider(appContext))
     }
 
-    private fun getAppRemoteActionsProvider(context: Context): SharingProvider {
-        return SharingProviderImpl(context)
+    private fun getAppRemoteActionsProvider(srcActivityContext: Context): SharingProvider {
+        return SharingProviderImpl(srcActivityContext)
     }
-    fun provideAppRemoteActionsInteractor(): SharingInteractor {
-        return SharingInteractorImpl(getAppRemoteActionsProvider(appContext))
+    fun provideAppRemoteActionsInteractor(srcActivityContext: Context): SharingInteractor {
+        return SharingInteractorImpl(getAppRemoteActionsProvider(srcActivityContext))
     }
 }
