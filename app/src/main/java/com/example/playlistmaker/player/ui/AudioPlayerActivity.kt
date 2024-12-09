@@ -61,11 +61,6 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val currentTrack = getCurrentTrack()
 
-//        player = ViewModelProvider(
-//            this,
-//            PlayerViewModel.factory(currentTrack)
-//        )[PlayerViewModel::class.java]
-
 
         player.curState().observe(this) { state ->
             when (state) {

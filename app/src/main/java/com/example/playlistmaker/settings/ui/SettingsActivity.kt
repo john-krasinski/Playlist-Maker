@@ -37,7 +37,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
 
-//        settingsViewModel = ViewModelProvider(this, SettingsViewModel.factory(application, this))[SettingsViewModel::class.java]
         settingsViewModel.isDarkThemeEnabled().observe(this) { isEnabled ->
             ui.btnToggleDarkTheme.isChecked = isEnabled
         }
@@ -46,7 +45,6 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-//        ui.btnToggleDarkTheme.isChecked = App.useDarkTheme
         ui.btnToggleDarkTheme.setOnCheckedChangeListener { btn, isChecked ->
             settingsViewModel.toggleDarkTheme(isChecked)
         }
