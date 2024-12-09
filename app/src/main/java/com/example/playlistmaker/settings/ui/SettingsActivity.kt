@@ -23,16 +23,15 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_settings)
+
+        ui = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(ui.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        ui = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(ui.root)
 
 
         settingsViewModel = ViewModelProvider(this, SettingsViewModel.factory(application, this))[SettingsViewModel::class.java]

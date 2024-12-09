@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -27,7 +28,7 @@ import java.util.Locale
 
 const val POSITION_UPDATE_INTERVAL_MS: Long = 300
 
-class AudioPlayerActivity : ComponentActivity() {
+class AudioPlayerActivity : AppCompatActivity() {
 
     private var isLiked = false
     private var isAddedToPlaylist = false
@@ -48,7 +49,10 @@ class AudioPlayerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_audio_player)
+
+        ui = ActivityAudioPlayerBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -62,8 +66,7 @@ class AudioPlayerActivity : ComponentActivity() {
             PlayerViewModel.factory(currentTrack)
         )[PlayerViewModel::class.java]
 
-        ui = ActivityAudioPlayerBinding.inflate(layoutInflater)
-        setContentView(ui.root)
+
 
         player.curState().observe(this) { state ->
             when (state) {
