@@ -7,14 +7,15 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.ALBUM_NAME_KEY
@@ -40,7 +41,7 @@ const val SEARCH_DEBOUNCE_DELAY_MS: Long = 2000
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var tracksViewModel: TracksViewModel
+    private val tracksViewModel: TracksViewModel by viewModels<TracksViewModel> { TracksViewModel.factory() }
     private var historyTracks :List<Track> = emptyList()
     private lateinit var ui: ActivitySearchBinding
 
@@ -69,8 +70,6 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-
-        tracksViewModel = ViewModelProvider(this, TracksViewModel.factory())[TracksViewModel::class.java]
         tracksViewModel.getState().observe(this) {
             renderSearchState(it)
         }
@@ -110,14 +109,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         query = savedInstanceState.getString(SEARCH_QUERY, QUERY_DEF)
-    }
-
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
     }
 
     private fun renderSearchState(state: TrackSearchState) {
@@ -173,7 +164,7 @@ class SearchActivity : AppCompatActivity() {
                     query = s.toString()
                     debounceSearch()
                 }
-                ui.searchBoxClearIcon.visibility = clearButtonVisibility(s)
+                ui.searchBoxClearIcon.isVisible = !s.isNullOrEmpty()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -203,11 +194,11 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showProgress() {
         setHistoryVisibility(false)
-        ui.progressSearch.visibility = View.VISIBLE
+        ui.progressSearch.isVisible = true
     }
 
     private fun hideProgress() {
-        ui.progressSearch.visibility = View.GONE
+        ui.progressSearch.isVisible = false
     }
 
     private fun doSearch(text: String) {
@@ -218,7 +209,7 @@ class SearchActivity : AppCompatActivity() {
     private fun showFoundTracks(tracks: List<Track>) {
         hideProgress()
         ui.searchRecycler.adapter = TrackAdapter(tracks, onTrackClick)
-        ui.searchRecycler.visibility = View.VISIBLE
+        ui.searchRecycler.isVisible = true
     }
 
     private fun showNotFound() {
@@ -226,7 +217,7 @@ class SearchActivity : AppCompatActivity() {
         ui.searchRecycler.adapter = SearchErrorAdapter(
             SearchError(getString(R.string.errorTracksNotFound),getDrawable(R.drawable.track_not_found),null, null)
         )
-        ui.searchRecycler.visibility = View.VISIBLE
+        ui.searchRecycler.isVisible = true
     }
 
     private fun showNetworkError() {
@@ -237,7 +228,7 @@ class SearchActivity : AppCompatActivity() {
                 R.string.errorPageBtnTextUpdate
             ), onClick)
         )
-        ui.searchRecycler.visibility = View.VISIBLE
+        ui.searchRecycler.isVisible = true
         val updateButton = findViewById<Button>(R.id.errorPageBtn)
     }
 
@@ -245,14 +236,12 @@ class SearchActivity : AppCompatActivity() {
     private fun setHistoryVisibility(visible:Boolean) {
         hideProgress()
         if (visible) {
-//            if (historyTracks.isNotEmpty()) {
-                ui.searchHistoryGroup.visibility = View.VISIBLE
-                reDrawHistory()
-                ui.searchRecycler.visibility = View.VISIBLE
-//            }
+            ui.searchHistoryGroup.isVisible = true
+            reDrawHistory()
+            ui.searchRecycler.isVisible = true
         } else {
-            ui.searchHistoryGroup.visibility = View.GONE
-            ui.searchRecycler.visibility = View.GONE
+            ui.searchHistoryGroup.isVisible = false
+            ui.searchRecycler.isVisible = false
         }
         historyVisible = visible
     }

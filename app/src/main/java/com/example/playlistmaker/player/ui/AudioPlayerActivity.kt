@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,7 +34,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private var isLiked = false
     private var isAddedToPlaylist = false
 
-    private lateinit var player: PlayerViewModel
+    private val player: PlayerViewModel by viewModels<PlayerViewModel> { PlayerViewModel.factory(getCurrentTrack()) }
     private lateinit var ui: ActivityAudioPlayerBinding
 
     val handler = Handler(Looper.getMainLooper())
@@ -60,10 +61,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val currentTrack = getCurrentTrack()
 
-        player = ViewModelProvider(
-            this,
-            PlayerViewModel.factory(currentTrack)
-        )[PlayerViewModel::class.java]
+//        player = ViewModelProvider(
+//            this,
+//            PlayerViewModel.factory(currentTrack)
+//        )[PlayerViewModel::class.java]
 
 
         player.curState().observe(this) { state ->

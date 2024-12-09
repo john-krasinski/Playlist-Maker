@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,7 +18,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var settingsViewModel: SettingsViewModel
+    private val settingsViewModel: SettingsViewModel by viewModels<SettingsViewModel> {
+        SettingsViewModel.factory(application, this)
+    }
     private lateinit var ui: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +37,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
 
-        settingsViewModel = ViewModelProvider(this, SettingsViewModel.factory(application, this))[SettingsViewModel::class.java]
+//        settingsViewModel = ViewModelProvider(this, SettingsViewModel.factory(application, this))[SettingsViewModel::class.java]
         settingsViewModel.isDarkThemeEnabled().observe(this) { isEnabled ->
             ui.btnToggleDarkTheme.isChecked = isEnabled
         }

@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.search.data.SearchError
@@ -22,7 +23,7 @@ class SearchErrorViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
         if (model.buttonText != null && model.buttonOnClick != null) {
             button.text = model.buttonText
-            button.visibility = View.VISIBLE
+            button.isVisible = true
             button.setOnClickListener {
                 model.buttonOnClick.invoke()
             }
