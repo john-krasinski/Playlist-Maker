@@ -6,6 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
-    tools:context=".presentation.library.MediaLibraryActivity">
+    tools:context=".library.ui.MediaLibraryActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
