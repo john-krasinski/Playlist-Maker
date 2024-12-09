@@ -11,8 +11,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -38,7 +38,7 @@ import com.example.playlistmaker.search.ui.tracks.TrackSearchState
 
 const val SEARCH_DEBOUNCE_DELAY_MS: Long = 2000
 
-class SearchActivity : ComponentActivity() {
+class SearchActivity : AppCompatActivity() {
 
     private lateinit var tracksViewModel: TracksViewModel
     private var historyTracks :List<Track> = emptyList()

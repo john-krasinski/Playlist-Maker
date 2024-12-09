@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -14,7 +15,7 @@ import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 
-class SettingsActivity : ComponentActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     private lateinit var settingsViewModel: SettingsViewModel
     private lateinit var ui: ActivitySettingsBinding
@@ -33,7 +34,8 @@ class SettingsActivity : ComponentActivity() {
         ui = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(ui.root)
 
-        settingsViewModel = ViewModelProvider(this, SettingsViewModel.factory(application))[SettingsViewModel::class.java]
+
+        settingsViewModel = ViewModelProvider(this, SettingsViewModel.factory(application, this))[SettingsViewModel::class.java]
         settingsViewModel.isDarkThemeEnabled().observe(this) { isEnabled ->
             ui.btnToggleDarkTheme.isChecked = isEnabled
         }

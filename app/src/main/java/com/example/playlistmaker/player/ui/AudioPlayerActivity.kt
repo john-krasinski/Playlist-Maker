@@ -5,7 +5,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -28,7 +27,7 @@ import java.util.Locale
 
 const val POSITION_UPDATE_INTERVAL_MS: Long = 300
 
-class AudioPlayerActivity : AppCompatActivity() {
+class AudioPlayerActivity : ComponentActivity() {
 
     private var isLiked = false
     private var isAddedToPlaylist = false
