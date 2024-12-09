@@ -48,11 +48,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
         ui = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(ui.root)
 
+        enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -65,7 +64,6 @@ class AudioPlayerActivity : AppCompatActivity() {
             this,
             PlayerViewModel.factory(currentTrack)
         )[PlayerViewModel::class.java]
-
 
 
         player.curState().observe(this) { state ->
