@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         if ((application as App).settings().isDarkThemeEnabled()) {
             enableEdgeToEdge()
         } else {
-            enableEdgeToEdge(statusBarStyle = SystemBarStyle.light(getColor(R.color.white), Color.TRANSPARENT))
+            enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         }
 
         setContentView(R.layout.activity_main)
@@ -50,5 +50,9 @@ class MainActivity : AppCompatActivity() {
             val goSettingsIntent = Intent(this, SettingsActivity::class.java)
             startActivity(goSettingsIntent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 }
