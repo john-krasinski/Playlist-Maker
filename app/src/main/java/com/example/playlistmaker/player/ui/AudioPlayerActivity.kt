@@ -3,13 +3,10 @@ package com.example.playlistmaker.player.ui
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.ALBUM_NAME_KEY
 import com.example.playlistmaker.ARTIST_NAME_KEY
@@ -24,6 +21,8 @@ import com.example.playlistmaker.TRACK_ID_KEY
 import com.example.playlistmaker.TRACK_NAME_KEY
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.search.domain.models.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -34,7 +33,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     private var isLiked = false
     private var isAddedToPlaylist = false
 
-    private val player: PlayerViewModel by viewModels<PlayerViewModel> { PlayerViewModel.factory(getCurrentTrack()) }
+    private val player: PlayerViewModel by viewModel<PlayerViewModel> { parametersOf(getCurrentTrack()) }
+
     private lateinit var ui: ActivityAudioPlayerBinding
 
     val handler = Handler(Looper.getMainLooper())

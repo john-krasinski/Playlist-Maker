@@ -11,14 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
-class RetrofitApiClient: ApiClient {
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val searchApi = retrofit.create<SearchApi>()
+class RetrofitApiClient(private val searchApi: SearchApi): ApiClient {
 
     override fun doRequest(dto: Any, onSuccess: (ApiResponse) -> Unit, onError: (String) -> Unit) {
 

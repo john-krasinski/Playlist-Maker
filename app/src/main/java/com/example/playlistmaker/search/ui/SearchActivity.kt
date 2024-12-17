@@ -11,12 +11,10 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.ALBUM_NAME_KEY
 import com.example.playlistmaker.ARTIST_NAME_KEY
@@ -36,12 +34,13 @@ import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.error.SearchErrorAdapter
 import com.example.playlistmaker.search.ui.tracks.TrackAdapter
 import com.example.playlistmaker.search.ui.tracks.TrackSearchState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val SEARCH_DEBOUNCE_DELAY_MS: Long = 2000
 
 class SearchActivity : AppCompatActivity() {
 
-    private val tracksViewModel: TracksViewModel by viewModels<TracksViewModel> { TracksViewModel.factory() }
+    private val tracksViewModel: TracksViewModel by viewModel<TracksViewModel>()
     private var historyTracks :List<Track> = emptyList()
     private lateinit var ui: ActivitySearchBinding
 
