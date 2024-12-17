@@ -9,6 +9,7 @@ const val HISTORY_KEY = "SEARCH_HISTORY"
 
 
 class SearchHistory(val sharedPreferences: SharedPreferences,
+                    val gson: Gson,
                     val maxSize: Int = MAX_HISTORY_SIZE
 )
 {
@@ -28,12 +29,12 @@ class SearchHistory(val sharedPreferences: SharedPreferences,
     }
 
     private fun save() {
-        val historyJson = Gson().toJson(items)
+        val historyJson = gson.toJson(items)
         sharedPreferences.edit().putString(HISTORY_KEY, historyJson).apply()
     }
 
     private fun load() {
-        val history = Gson().fromJson(sharedPreferences.getString(HISTORY_KEY, ""), Array<LocalHistoryTrackDto>::class.java)
+        val history = gson.fromJson(sharedPreferences.getString(HISTORY_KEY, ""), Array<LocalHistoryTrackDto>::class.java)
         items.clear()
         if (history != null) {
             items.addAll(history.take(10))

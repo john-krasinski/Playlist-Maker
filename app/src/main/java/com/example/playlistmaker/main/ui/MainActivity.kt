@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if ((application as App).settings().isDarkThemeEnabled()) {
+        if ((application as App).settings.isDarkThemeEnabled()) {
             enableEdgeToEdge()
         } else {
             enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))

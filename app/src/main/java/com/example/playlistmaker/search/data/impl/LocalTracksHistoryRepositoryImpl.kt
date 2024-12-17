@@ -6,9 +6,7 @@ import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.data.SearchHistory
 import com.example.playlistmaker.search.domain.api.TracksHistoryRepository
 
-class LocalTracksHistoryRepositoryImpl(context: Context): TracksHistoryRepository {
-
-    private val history = SearchHistory(context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, Context.MODE_PRIVATE))
+class LocalTracksHistoryRepositoryImpl(private val history: SearchHistory): TracksHistoryRepository {
 
     override fun getTracks(): List<Track> {
         return history.get().map {

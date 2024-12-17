@@ -6,15 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.search.domain.api.TracksInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.tracks.TrackSearchState
 
-class TracksViewModel: ViewModel() {
-
-    private val tracksInteractor = Creator.provideTracksInteractor()
-    private val historyInteractor = Creator.provideHistoryInteractor()
+class TracksViewModel(
+    private val tracksInteractor: TracksInteractor,
+    private val historyInteractor: TracksHistoryInteractor
+): ViewModel() {
 
     private val state = MutableLiveData<TrackSearchState>()
 
@@ -64,10 +64,13 @@ class TracksViewModel: ViewModel() {
     fun getHistory(): LiveData<List<Track>> = history
 
     companion object {
-        fun factory(): ViewModelProvider.Factory {
+        fun factory(
+            tracksInteractor: TracksInteractor,
+            historyInteractor: TracksHistoryInteractor
+        ): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    TracksViewModel()
+                    TracksViewModel(tracksInteractor, historyInteractor)
                 }
             }
         }
