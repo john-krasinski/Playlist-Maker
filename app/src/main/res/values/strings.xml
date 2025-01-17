@@ -27,4 +27,8 @@
     <string name="trackDetailsGenreLabel">Жанр</string>
     <string name="trackDetailsCountryLabel">Страна</string>
     <string name="trackDetailUnknown">Unknown</string>
+    <string name="mediaLibraryHeader">Медиатека</string>
+    <string name="msgEmptyFavs">Ваша медиатека пуста</string>
+    <string name="msgNoPlaylists">Вы не создали\nни одного плейлиста</string>
+    <string name="btnNewPlaylist">Новый плейлист</string>
 </resources>
