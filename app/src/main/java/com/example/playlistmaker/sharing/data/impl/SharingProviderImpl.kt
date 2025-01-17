@@ -7,33 +7,37 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.sharing.domain.api.SharingProvider
 
 
-class SharingProviderImpl(private val srcActivityContext: Context): SharingProvider {
+class SharingProviderImpl(private val context: Context): SharingProvider {
     override fun shareApp() {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, srcActivityContext.getString(R.string.ShareAppMessage))
+            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.ShareAppMessage))
             type = "text/plain"
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
-        srcActivityContext.startActivity(shareIntent)
+
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(shareIntent)
     }
 
     override fun contactSupport() {
         val sendIntent: Intent =  Intent().apply {
             action = Intent.ACTION_SENDTO
             data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, srcActivityContext.getString(R.string.SupportEmail))
-            putExtra(Intent.EXTRA_TEXT, srcActivityContext.getString(R.string.SupportMessageText))
-            putExtra(Intent.EXTRA_SUBJECT, srcActivityContext.getString(R.string.SupportMessageHeader))
+            putExtra(Intent.EXTRA_EMAIL, context.getString(R.string.SupportEmail))
+            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.SupportMessageText))
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.SupportMessageHeader))
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        srcActivityContext.startActivity(sendIntent)
+        context.startActivity(sendIntent)
     }
 
     override fun readUserAgreement() {
         val sendIntent: Intent =  Intent().apply {
             action = Intent.ACTION_VIEW
-            data = Uri.parse(srcActivityContext.getString(R.string.LicenseUrl))
+            data = Uri.parse(context.getString(R.string.LicenseUrl))
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        srcActivityContext.startActivity(sendIntent)
+        context.startActivity(sendIntent)
     }
 }

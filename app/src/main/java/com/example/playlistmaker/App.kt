@@ -2,8 +2,13 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.domainModule
+import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.settings.domain.api.SettingsInteractor
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext.startKoin
 
 
 const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
@@ -25,10 +30,16 @@ class App : Application() {
         public var useDarkTheme = false
     }
 
+    val settings:SettingsInteractor by inject()
+
     override fun onCreate() {
         super.onCreate()
-        Creator.setAppContext(this)
-        useDarkTheme = settings().isDarkThemeEnabled()
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, domainModule, viewModelModule)
+        }
+
+        useDarkTheme = settings.isDarkThemeEnabled()
         toggleDarkTheme(useDarkTheme)
     }
 
@@ -42,10 +53,7 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
         )
 
-        settings().toggleDarkTheme(useDarkTheme)
+        settings.toggleDarkTheme(useDarkTheme)
     }
 
-    fun settings(): SettingsInteractor {
-        return Creator.provideAppSettingsInteractor()
-    }
 }

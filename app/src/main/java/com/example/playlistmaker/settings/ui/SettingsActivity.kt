@@ -1,26 +1,26 @@
 package com.example.playlistmaker.settings.ui
 
 import android.os.Bundle
-import android.view.View
-import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.App
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.example.playlistmaker.sharing.domain.api.SharingInteractor
+import com.example.playlistmaker.sharing.domain.api.SharingProvider
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class SettingsActivity : AppCompatActivity() {
 
-    private val settingsViewModel: SettingsViewModel by viewModels<SettingsViewModel> {
-        SettingsViewModel.factory(application, this)
+    private val settingsViewModel: SettingsViewModel by viewModel<SettingsViewModel> {
+        parametersOf((application as App))
     }
+
     private lateinit var ui: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
