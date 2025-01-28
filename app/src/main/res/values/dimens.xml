@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="settingsTextSize">16sp</dimen>
-    <dimen name="settingsPaddingVertical">21dp</dimen>
+    <dimen name="settingsPaddingVertical">18dp</dimen>
     <dimen name="settingsPaddingHorizontal">16dp</dimen>
     <dimen name="settingsIconPadding">18dp</dimen>
     <dimen name="mainButtonIconPadding">8dp</dimen>

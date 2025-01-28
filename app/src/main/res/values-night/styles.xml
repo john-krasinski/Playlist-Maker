@@ -12,7 +12,6 @@
     <style name="HeaderText" parent="AppFontFamily">
         <item name="android:textSize">@dimen/headerTextSize</item>
         <item name="android:padding">@dimen/headerTextPadding</item>
-        <item name="android:paddingStart">0dp</item>
         <item name="textAllCaps">false</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">@dimen/headerHeight</item>
@@ -38,12 +37,10 @@
     </style>
 
     <style name="SettingsItemText" parent="AppFontFamily">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:backgroundTint">?attr/colorPrimary</item>
-        <item name="android:paddingHorizontal">@dimen/settingsPaddingHorizontal</item>
+        <item name="android:paddingStart">@dimen/settingsPaddingHorizontal</item>
         <item name="android:paddingVertical">@dimen/settingsPaddingVertical</item>
-        <item name="android:layout_gravity">start|center_vertical</item>
+        <item name="android:paddingEnd">@dimen/settingsIconPadding</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/settingsTextSize</item>
