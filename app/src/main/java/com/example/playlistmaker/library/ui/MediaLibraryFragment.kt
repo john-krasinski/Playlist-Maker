@@ -22,32 +22,21 @@ class MediaLibraryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (savedInstanceState == null) {
-            //  открыть экран по-умолчанию
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         ui = FragmentMediaLibraryBinding.inflate(layoutInflater)
-        return ui.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        ui.libraryPager.adapter = LibraryPagerAdapter(parentFragmentManager, lifecycle)
-
+        ui.libraryPager.adapter = LibraryPagerAdapter(childFragmentManager, lifecycle)
         tabMediator = TabLayoutMediator(ui.libraryTabs, ui.libraryPager) { tab, pos ->
             tab.text = LibraryPagerAdapter.tabs[pos]
         }
         tabMediator.attach()
 
-//        ui.btnBackFromLibrary.setOnClickListener { finish() }
+        return ui.root
     }
 
     override fun onDestroy() {

@@ -7,8 +7,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.ALBUM_NAME_KEY
+import com.example.playlistmaker.ARTIST_NAME_KEY
+import com.example.playlistmaker.ARTWORK_URL_KEY
+import com.example.playlistmaker.COUNTRY_KEY
+import com.example.playlistmaker.GENRE_KEY
+import com.example.playlistmaker.PREVIEW_URL_KEY
 import com.example.playlistmaker.R
+import com.example.playlistmaker.RELEASE_YEAR_KEY
+import com.example.playlistmaker.TRACK_DURATION_KEY
+import com.example.playlistmaker.TRACK_ID_KEY
+import com.example.playlistmaker.TRACK_NAME_KEY
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -18,18 +30,26 @@ import java.util.Locale
 
 const val POSITION_UPDATE_INTERVAL_MS: Long = 300
 
-class AudioPlayerFragment(private val currentTrack: Track) : Fragment() {
+class AudioPlayerFragment : Fragment() {
 
     private val player: PlayerViewModel by viewModel<PlayerViewModel> { parametersOf(currentTrack) }
     private lateinit var ui: FragmentAudioPlayerBinding
-
     companion object {
-        fun newInstance(track: Track) =
-            AudioPlayerFragment(track.apply {
-                artworkUrl.replaceAfterLast('/',"512x512bb.jpg")
-            })
+        fun createArgs(track: Track) =
+            bundleOf(
+                TRACK_ID_KEY to track.trackId,
+                TRACK_NAME_KEY to track.trackName,
+                ARTIST_NAME_KEY to track.artistName,
+                ALBUM_NAME_KEY to track.albumName,
+                RELEASE_YEAR_KEY to track.year,
+                GENRE_KEY to track.genre,
+                COUNTRY_KEY to track.country,
+                TRACK_DURATION_KEY to track.trackTime,
+                ARTWORK_URL_KEY to track.artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),
+                PREVIEW_URL_KEY to track.previewUrl
+            )
     }
-
+    private lateinit var currentTrack: Track
     private var isLiked = false
     private var isAddedToPlaylist = false
     private val handler = Handler(Looper.getMainLooper())
@@ -47,6 +67,8 @@ class AudioPlayerFragment(private val currentTrack: Track) : Fragment() {
         if (savedInstanceState == null) {
             //  открыть экран по-умолчанию
         }
+
+        getCurrentTrack()
     }
 
     override fun onCreateView(
@@ -54,11 +76,6 @@ class AudioPlayerFragment(private val currentTrack: Track) : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         ui = FragmentAudioPlayerBinding.inflate(inflater)
-        return ui.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         player.curState().observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -97,10 +114,6 @@ class AudioPlayerFragment(private val currentTrack: Track) : Fragment() {
                 .into(ui.albumImage)
         }
 
-//        ui.btnBackFromPlayer.setOnClickListener {
-//            finish()
-//        }
-
         ui.btnPlayPause.isEnabled = false
         ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
         ui.btnPlayPause.setOnClickListener {
@@ -130,8 +143,10 @@ class AudioPlayerFragment(private val currentTrack: Track) : Fragment() {
         }
 
         ui.btnBackFromPlayer.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
+
+        return ui.root
     }
 
 
@@ -143,5 +158,22 @@ class AudioPlayerFragment(private val currentTrack: Track) : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(updateTimeRunnable)
+    }
+
+    private fun getCurrentTrack() {
+        val unknown = requireContext().getString(R.string.trackDetailUnknown)
+
+        val trackId = arguments?.getInt(TRACK_ID_KEY, -1) ?: -1
+        val trackName = arguments?.getString(TRACK_NAME_KEY) ?: unknown
+        val artistName = arguments?.getString(ARTIST_NAME_KEY) ?: unknown
+        val albumName = arguments?.getString(ALBUM_NAME_KEY) ?: unknown
+        val year = arguments?.getString(RELEASE_YEAR_KEY) ?: unknown
+        val genre = arguments?.getString(GENRE_KEY) ?: unknown
+        val country = arguments?.getString(COUNTRY_KEY) ?: unknown
+        val trackTime = arguments?.getString(TRACK_DURATION_KEY) ?: unknown
+        val artworkUrl = arguments?.getString(ARTWORK_URL_KEY) ?: ""
+        val previewUrl = arguments?.getString(PREVIEW_URL_KEY) ?: ""
+
+        currentTrack = Track(trackId,trackName,artistName,albumName,trackTime,artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),country,genre,year,previewUrl)
     }
 }

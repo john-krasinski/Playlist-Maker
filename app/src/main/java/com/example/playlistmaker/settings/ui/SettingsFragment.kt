@@ -22,9 +22,6 @@ class SettingsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (savedInstanceState == null) {
-            //
-        }
     }
 
     override fun onCreateView(
@@ -32,18 +29,10 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         ui = FragmentSettingsBinding.inflate(inflater)
-        return ui.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         settingsViewModel.isDarkThemeEnabled().observe(viewLifecycleOwner) { isEnabled ->
             ui.btnToggleDarkTheme.isChecked = isEnabled
         }
-
-//        ui.btnBackFromSettings.setOnClickListener {
-//            finish()
-//        }
 
         ui.btnToggleDarkTheme.setOnCheckedChangeListener { btn, isChecked ->
             settingsViewModel.toggleDarkTheme(isChecked)
@@ -60,6 +49,8 @@ class SettingsFragment : Fragment() {
         ui.btnUserAgreement.setOnClickListener {
             settingsViewModel.readUserAgreement()
         }
+
+        return ui.root
     }
 
     companion object {

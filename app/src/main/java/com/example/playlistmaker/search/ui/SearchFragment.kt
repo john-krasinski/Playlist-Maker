@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,19 +14,9 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.ALBUM_NAME_KEY
-import com.example.playlistmaker.ARTIST_NAME_KEY
-import com.example.playlistmaker.ARTWORK_URL_KEY
-import com.example.playlistmaker.COUNTRY_KEY
-import com.example.playlistmaker.GENRE_KEY
-import com.example.playlistmaker.PREVIEW_URL_KEY
 import com.example.playlistmaker.R
-import com.example.playlistmaker.RELEASE_YEAR_KEY
-import com.example.playlistmaker.TRACK_DURATION_KEY
-import com.example.playlistmaker.TRACK_ID_KEY
-import com.example.playlistmaker.TRACK_NAME_KEY
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.AudioPlayerFragment
 import com.example.playlistmaker.search.data.SearchError
@@ -70,16 +59,9 @@ class SearchFragment : Fragment() {
     ): View {
         ui = FragmentSearchBinding.inflate(layoutInflater)
 
-        tracksViewModel.getState().observe(viewLifecycleOwner) {
+        tracksViewModel.state.observe(viewLifecycleOwner) {
             renderSearchState(it)
         }
-        tracksViewModel.getHistory().observe(viewLifecycleOwner) {
-            historyTracks = it
-            if (historyVisible) {
-                reDrawHistory()
-            }
-        }
-
 
         ui.searchRecycler.layoutManager = LinearLayoutManager(requireContext())
         ui.searchRecycler.adapter = TrackAdapter(listOf())
@@ -101,8 +83,12 @@ class SearchFragment : Fragment() {
 
     private fun renderSearchState(state: TrackSearchState) {
         when (state) {
-            TrackSearchState.Initial -> {
+            is TrackSearchState.Initial -> {
+                historyTracks = state.historyTracks
                 setHistoryVisibility(historyTracks.isNotEmpty())
+                if (historyVisible) {
+                    reDrawHistory()
+                }
             }
             is TrackSearchState.Content -> {
                 showFoundTracks(state.foundTracks)
@@ -126,11 +112,7 @@ class SearchFragment : Fragment() {
         setHistoryVisibility(historyTracks.isNotEmpty())
 
         ui.searchBoxClearIcon.setOnClickListener {
-            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(ui.searchBox.windowToken, 0)
-            ui.searchRecycler.adapter = TrackAdapter(listOf())
-            ui.searchBox.setText("")
-            ui.searchBox.isFocusedByDefault = true
+            resetSearch()
         }
 
         if (savedInstanceState != null) {
@@ -178,6 +160,15 @@ class SearchFragment : Fragment() {
     private fun debounceSearch() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
+    }
+
+    private fun resetSearch() {
+        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(ui.searchBox.windowToken, 0)
+        ui.searchRecycler.adapter = TrackAdapter(listOf())
+        ui.searchBox.setText("")
+        ui.searchBox.isFocusedByDefault = true
+        tracksViewModel.resetSearch()
     }
 
     private fun showProgress() {
@@ -238,10 +229,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun openTrackInPlayer(track: Track) {
-        parentFragmentManager.commit {
-            replace(R.id.main, AudioPlayerFragment.newInstance(track))
-            addToBackStack(null)
-        }
+        findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment22, AudioPlayerFragment.createArgs(track))
     }
 
 

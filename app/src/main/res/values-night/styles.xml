@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">s
+    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
         <item name="android:textAppearance">@style/AppFontFamily</item>
     </style>
 

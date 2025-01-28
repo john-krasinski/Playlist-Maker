@@ -5,43 +5,44 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.commit
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.library.ui.MediaLibraryFragment
-import com.example.playlistmaker.search.ui.SearchFragment
-import com.example.playlistmaker.settings.ui.SettingsFragment
+import com.example.playlistmaker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var ui: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+        ui =  ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainFragmentContainer)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
         enableEdgeToEdge()
-//        if ((application as App).settings.isDarkThemeEnabled()) {
-//            enableEdgeToEdge()
-//        } else {
-//            enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
-//        }
 
-
-        if (savedInstanceState == null) {
-
-            supportFragmentManager.commit {
-//                replace(R.id.main, MediaLibraryFragment())
-                replace(R.id.main, SearchFragment())
-//                replace(R.id.main, SettingsFragment())
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainFragmentContainer) as NavHostFragment
+        val navController = navHostFragment.navController
+        ui.bottomNav.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.audioPlayerFragment2 -> {
+                    ui.bottomNav.isVisible = false
+                }
+                else -> {
+                    ui.bottomNav.isVisible = true
+                }
             }
         }
+
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
 }
