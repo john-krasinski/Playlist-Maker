@@ -175,4 +175,11 @@
     <style name="BottomNavigationTextAppearance" parent="AppFontFamily">
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="TabLayoutTextAppearance" parent="AppFontFamilyBold">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>

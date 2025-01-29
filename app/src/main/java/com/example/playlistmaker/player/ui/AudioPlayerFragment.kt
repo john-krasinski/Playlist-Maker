@@ -33,7 +33,9 @@ const val POSITION_UPDATE_INTERVAL_MS: Long = 300
 class AudioPlayerFragment : Fragment() {
 
     private val player: PlayerViewModel by viewModel<PlayerViewModel> { parametersOf(currentTrack) }
-    private lateinit var ui: FragmentAudioPlayerBinding
+    private var _ui: FragmentAudioPlayerBinding? = null
+    private val ui get() = _ui!!
+
     companion object {
         fun createArgs(track: Track) =
             bundleOf(
@@ -49,6 +51,7 @@ class AudioPlayerFragment : Fragment() {
                 PREVIEW_URL_KEY to track.previewUrl
             )
     }
+
     private lateinit var currentTrack: Track
     private var isLiked = false
     private var isAddedToPlaylist = false
@@ -75,7 +78,7 @@ class AudioPlayerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        ui = FragmentAudioPlayerBinding.inflate(inflater)
+        _ui = FragmentAudioPlayerBinding.inflate(inflater)
 
         player.curState().observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -146,7 +149,8 @@ class AudioPlayerFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        return ui.root
+        val root = ui.root
+        return root
     }
 
 
@@ -158,6 +162,11 @@ class AudioPlayerFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(updateTimeRunnable)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _ui = null
     }
 
     private fun getCurrentTrack() {

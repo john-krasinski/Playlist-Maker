@@ -17,7 +17,14 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:navGraph="@navigation/bottom_nav"
         app:defaultNavHost="true"/>
-
+    <View
+        android:id="@+id/bottomNavDivider"
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/grey2"/>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"

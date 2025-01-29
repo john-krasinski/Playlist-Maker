@@ -17,7 +17,8 @@ class SettingsFragment : Fragment() {
         parametersOf((requireActivity().application as App))
     }
 
-    private lateinit var ui: FragmentSettingsBinding
+    private var _ui: FragmentSettingsBinding? = null
+    private val ui get() = _ui!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        ui = FragmentSettingsBinding.inflate(inflater)
+        _ui = FragmentSettingsBinding.inflate(inflater)
 
         settingsViewModel.isDarkThemeEnabled().observe(viewLifecycleOwner) { isEnabled ->
             ui.btnToggleDarkTheme.isChecked = isEnabled
@@ -50,7 +51,13 @@ class SettingsFragment : Fragment() {
             settingsViewModel.readUserAgreement()
         }
 
-        return ui.root
+        val root = ui.root
+        return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _ui = null
     }
 
     companion object {

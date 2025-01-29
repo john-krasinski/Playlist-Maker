@@ -17,7 +17,8 @@ class PlaylistsFragment : Fragment() {
 
     private val playlists: PlaylistsViewModel by viewModels()
 
-    private lateinit var ui: FragmentPlaylistsBinding
+    private var _ui: FragmentPlaylistsBinding? = null
+    private val ui get() = _ui!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +29,14 @@ class PlaylistsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        ui = FragmentPlaylistsBinding.inflate(inflater,container,false)
+        _ui = FragmentPlaylistsBinding.inflate(inflater,container,false)
+
         return ui.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _ui = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

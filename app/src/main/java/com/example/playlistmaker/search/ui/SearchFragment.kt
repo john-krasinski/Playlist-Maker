@@ -31,7 +31,9 @@ const val SEARCH_DEBOUNCE_DELAY_MS: Long = 2000
 
 class SearchFragment : Fragment() {
 
-    private lateinit var ui: FragmentSearchBinding
+    private var _ui: FragmentSearchBinding? = null
+    private val ui get() = _ui!!
+
     private val tracksViewModel: TracksViewModel by viewModel<TracksViewModel>()
 
     private var historyTracks :List<Track> = emptyList()
@@ -57,7 +59,7 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        ui = FragmentSearchBinding.inflate(layoutInflater)
+        _ui = FragmentSearchBinding.inflate(layoutInflater)
 
         tracksViewModel.state.observe(viewLifecycleOwner) {
             renderSearchState(it)
@@ -73,9 +75,14 @@ class SearchFragment : Fragment() {
 
         prepareSearchBox(savedInstanceState)
 
-        return ui.root
+        val root = ui.root
+        return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _ui = null
+    }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_QUERY, query)

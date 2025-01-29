@@ -17,30 +17,37 @@ class MediaLibraryFragment : Fragment() {
         fun newInstance() = MediaLibraryFragment()
     }
 
-    private lateinit var ui: FragmentMediaLibraryBinding
-    private lateinit var tabMediator: TabLayoutMediator
+    private var _ui: FragmentMediaLibraryBinding? = null
+    private val ui get() = _ui!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var _tabMediator: TabLayoutMediator? = null
+    private val tabMediator get() = _tabMediator!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        ui = FragmentMediaLibraryBinding.inflate(layoutInflater)
+        _ui = FragmentMediaLibraryBinding.inflate(layoutInflater)
 
         ui.libraryPager.adapter = LibraryPagerAdapter(childFragmentManager, lifecycle)
-        tabMediator = TabLayoutMediator(ui.libraryTabs, ui.libraryPager) { tab, pos ->
+        _tabMediator = TabLayoutMediator(ui.libraryTabs, ui.libraryPager) { tab, pos ->
             tab.text = LibraryPagerAdapter.tabs[pos]
         }
+
         tabMediator.attach()
 
-        return ui.root
+        val root = ui.root
+        return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        tabMediator.detach()
+        _tabMediator = null
+        _ui = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        tabMediator.detach()
     }
 }
