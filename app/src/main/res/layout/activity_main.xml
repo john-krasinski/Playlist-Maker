@@ -1,59 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    style="@style/Theme.PlaylistMaker"
-    android:background="?colorPrimary"
-    tools:context=".main.ui.MainActivity">
+    style="@style/Theme.PlaylistMaker">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="8dp">
-
-        <TextView
-            style="@style/MainHeaderText"
-            android:layout_width="match_parent"
-            android:text="@string/mainHeader" />
-    </LinearLayout>
-
-
-
-    <LinearLayout
+    <androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mainFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical"
-        android:paddingBottom="12dp">
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:navGraph="@navigation/bottom_nav"
+        app:defaultNavHost="true"/>
+    <View
+        android:id="@+id/bottomNavDivider"
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/grey2"/>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:itemIconSize="24dp"
+        app:itemTextAppearanceActive="@style/BottomNavigationTextAppearance"
+        app:itemTextAppearanceInactive="@style/BottomNavigationTextAppearance"
+        app:itemTextAppearanceActiveBoldEnabled="@style/BottomNavigationTextAppearance"
+        app:itemTextColor="@color/bottom_nav_selector"
+        app:itemIconTint="@color/bottom_nav_selector"
+        android:background="?attr/colorSecondary"
+        app:menu="@menu/bottom_nav_menu"/>
 
-        <Button
-            android:id="@+id/btnSearch"
-            style="@style/MainButton"
-            android:text="@string/Search"
-            app:icon="@drawable/search"
-            />
-
-        <Button
-            android:id="@+id/btnMediaLibrary"
-            style="@style/MainButton"
-            android:text="@string/MediaLibrary"
-            app:icon="@drawable/media_library"/>
-
-        <Button
-            android:id="@+id/btnSettings"
-            style="@style/MainButton"
-            android:text="@string/Settings"
-            app:icon="@drawable/settings"/>
-
-    </LinearLayout>
-</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

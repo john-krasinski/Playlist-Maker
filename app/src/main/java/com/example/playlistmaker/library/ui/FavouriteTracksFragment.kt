@@ -16,26 +16,26 @@ class FavouriteTracksFragment : Fragment() {
     }
 
     private val tracks: FavouriteTracksViewModel by viewModels()
-    private lateinit var ui: FragmentFavouriteTracksBinding
+    private var _ui: FragmentFavouriteTracksBinding? = null
+    private val ui get() = _ui!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // TODO: Use the ViewModel
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        ui = FragmentFavouriteTracksBinding.inflate(inflater, container, false)
+        _ui = FragmentFavouriteTracksBinding.inflate(inflater, container, false)
+
         return ui.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
 
-        // modify ui
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _ui = null
     }
 }

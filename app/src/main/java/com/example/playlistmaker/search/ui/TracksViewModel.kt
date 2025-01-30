@@ -16,52 +16,55 @@ class TracksViewModel(
     private val historyInteractor: TracksHistoryInteractor
 ): ViewModel() {
 
-    private val state = MutableLiveData<TrackSearchState>()
-
-    private val history = MutableLiveData<List<Track>>()
+    private val _state = MutableLiveData<TrackSearchState>()
+    private var history: List<Track> = listOf()
     init {
         loadHistory()
-        state.postValue(TrackSearchState.Initial)
+        _state.value = TrackSearchState.Initial(history)
     }
 
     private fun loadHistory() {
-        history.postValue(historyInteractor.getTracks())
+        history = historyInteractor.getTracks()
     }
 
     fun addToHistory(track:Track) {
-        history.postValue(historyInteractor.addTrack(track))
+        history = historyInteractor.addTrack(track)
     }
 
     fun clearHistory() {
-        history.postValue(historyInteractor.clear())
+        history = historyInteractor.clear()
     }
 
     fun search(query: String) {
 
         if (query.isNotEmpty()) {
-            state.postValue(TrackSearchState.Loading)
+            _state.postValue(TrackSearchState.Loading)
 
             tracksInteractor.searchTracks(query, object : TracksInteractor.TracksConsumer {
 
                 override fun onSuccess(foundTracks: List<Track>) {
 
                     if (foundTracks.isEmpty()) {
-                        state.postValue(TrackSearchState.NotFound)
+                        _state.postValue(TrackSearchState.NotFound)
                     } else {
-                        state.postValue(TrackSearchState.Content(foundTracks))
+                        _state.postValue(TrackSearchState.Content(foundTracks))
                     }
                 }
 
                 override fun onError(message: String) {
-                    state.postValue(TrackSearchState.Error(message))
+                    _state.postValue(TrackSearchState.Error(message))
                 }
             })
         }
     }
 
-    fun getState() : LiveData<TrackSearchState> = state
+    fun resetSearch() {
+        _state.value = TrackSearchState.Initial(history)
+    }
 
-    fun getHistory(): LiveData<List<Track>> = history
+    val state : LiveData<TrackSearchState>
+        get() = _state
+
 
     companion object {
         fun factory(

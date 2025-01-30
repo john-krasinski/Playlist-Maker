@@ -1,34 +1,24 @@
 package com.example.playlistmaker.search.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.ALBUM_NAME_KEY
-import com.example.playlistmaker.ARTIST_NAME_KEY
-import com.example.playlistmaker.ARTWORK_URL_KEY
-import com.example.playlistmaker.player.ui.AudioPlayerActivity
-import com.example.playlistmaker.COUNTRY_KEY
-import com.example.playlistmaker.GENRE_KEY
-import com.example.playlistmaker.PREVIEW_URL_KEY
 import com.example.playlistmaker.R
-import com.example.playlistmaker.RELEASE_YEAR_KEY
-import com.example.playlistmaker.TRACK_DURATION_KEY
-import com.example.playlistmaker.TRACK_ID_KEY
-import com.example.playlistmaker.TRACK_NAME_KEY
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
+import com.example.playlistmaker.player.ui.AudioPlayerFragment
 import com.example.playlistmaker.search.data.SearchError
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.error.SearchErrorAdapter
@@ -36,16 +26,18 @@ import com.example.playlistmaker.search.ui.tracks.TrackAdapter
 import com.example.playlistmaker.search.ui.tracks.TrackSearchState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 const val SEARCH_DEBOUNCE_DELAY_MS: Long = 2000
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
+
+    private var _ui: FragmentSearchBinding? = null
+    private val ui get() = _ui!!
 
     private val tracksViewModel: TracksViewModel by viewModel<TracksViewModel>()
+
     private var historyTracks :List<Track> = emptyList()
-    private lateinit var ui: ActivitySearchBinding
-
     var query: String = ""
-
     private var historyVisible = true
 
     val handler = Handler(Looper.getMainLooper())
@@ -58,34 +50,23 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        ui = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(ui.root)
-
-        enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        if (savedInstanceState != null) {
+            query = savedInstanceState.getString(SEARCH_QUERY, QUERY_DEF)
         }
+    }
 
-        tracksViewModel.getState().observe(this) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _ui = FragmentSearchBinding.inflate(layoutInflater)
+
+        tracksViewModel.state.observe(viewLifecycleOwner) {
             renderSearchState(it)
         }
-        tracksViewModel.getHistory().observe(this) {
-            historyTracks = it
-            if (historyVisible) {
-                reDrawHistory()
-            }
-        }
 
-
-        ui.searchRecycler.layoutManager = LinearLayoutManager(this)
+        ui.searchRecycler.layoutManager = LinearLayoutManager(requireContext())
         ui.searchRecycler.adapter = TrackAdapter(listOf())
-
-        ui.btnBackFromSearch.setOnClickListener {
-            finish()
-        }
 
         ui.btnClearSearchHistory.setOnClickListener {
             tracksViewModel.clearHistory()
@@ -93,27 +74,28 @@ class SearchActivity : AppCompatActivity() {
         }
 
         prepareSearchBox(savedInstanceState)
+
+        val root = ui.root
+        return root
     }
 
-    companion object {
-        const val SEARCH_QUERY = "PRODUCT_AMOUNT"
-        const val QUERY_DEF = ""
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _ui = null
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_QUERY, query)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        query = savedInstanceState.getString(SEARCH_QUERY, QUERY_DEF)
-    }
-
     private fun renderSearchState(state: TrackSearchState) {
         when (state) {
-            TrackSearchState.Initial -> {
+            is TrackSearchState.Initial -> {
+                historyTracks = state.historyTracks
                 setHistoryVisibility(historyTracks.isNotEmpty())
+                if (historyVisible) {
+                    reDrawHistory()
+                }
             }
             is TrackSearchState.Content -> {
                 showFoundTracks(state.foundTracks)
@@ -137,11 +119,7 @@ class SearchActivity : AppCompatActivity() {
         setHistoryVisibility(historyTracks.isNotEmpty())
 
         ui.searchBoxClearIcon.setOnClickListener {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(ui.searchBox.windowToken, 0)
-            ui.searchRecycler.adapter = TrackAdapter(listOf())
-            ui.searchBox.setText("")
-            ui.searchBox.isFocusedByDefault = true
+            resetSearch()
         }
 
         if (savedInstanceState != null) {
@@ -191,6 +169,15 @@ class SearchActivity : AppCompatActivity() {
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
     }
 
+    private fun resetSearch() {
+        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(ui.searchBox.windowToken, 0)
+        ui.searchRecycler.adapter = TrackAdapter(listOf())
+        ui.searchBox.setText("")
+        ui.searchBox.isFocusedByDefault = true
+        tracksViewModel.resetSearch()
+    }
+
     private fun showProgress() {
         setHistoryVisibility(false)
         ui.progressSearch.isVisible = true
@@ -214,7 +201,7 @@ class SearchActivity : AppCompatActivity() {
     private fun showNotFound() {
         hideProgress()
         ui.searchRecycler.adapter = SearchErrorAdapter(
-            SearchError(getString(R.string.errorTracksNotFound),getDrawable(R.drawable.track_not_found),null, null)
+            SearchError(getString(R.string.errorTracksNotFound),requireContext().getDrawable(R.drawable.track_not_found),null, null)
         )
         ui.searchRecycler.isVisible = true
     }
@@ -223,12 +210,11 @@ class SearchActivity : AppCompatActivity() {
         hideProgress()
         val onClick = { debounceSearch() }
         ui.searchRecycler.adapter = SearchErrorAdapter(
-            SearchError(getString(R.string.errorNetworkError), getDrawable(R.drawable.network_error),getString(
+            SearchError(getString(R.string.errorNetworkError), requireContext().getDrawable(R.drawable.network_error),getString(
                 R.string.errorPageBtnTextUpdate
             ), onClick)
         )
         ui.searchRecycler.isVisible = true
-        val updateButton = findViewById<Button>(R.id.errorPageBtn)
     }
 
 
@@ -250,22 +236,15 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun openTrackInPlayer(track: Track) {
-        val goPlayerIntent = Intent(this, AudioPlayerActivity::class.java)
-        goPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        goPlayerIntent.apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-            putExtra(TRACK_NAME_KEY,track.trackName)
-            putExtra(TRACK_ID_KEY,track.trackId)
-            putExtra(ARTIST_NAME_KEY,track.artistName)
-            putExtra(ALBUM_NAME_KEY, track.albumName)
-            putExtra(RELEASE_YEAR_KEY, track.year)
-            putExtra(GENRE_KEY, track.genre)
-            putExtra(COUNTRY_KEY, track.country)
-            putExtra(TRACK_DURATION_KEY, track.trackTime)
-            putExtra(ARTWORK_URL_KEY, track.artworkUrl)
-            putExtra(PREVIEW_URL_KEY, track.previewUrl)
-        }
-        startActivity(goPlayerIntent)
+        findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment22, AudioPlayerFragment.createArgs(track))
     }
 
+
+    companion object {
+        const val SEARCH_QUERY = "PRODUCT_AMOUNT"
+        const val QUERY_DEF = ""
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            SearchFragment()
+    }
 }

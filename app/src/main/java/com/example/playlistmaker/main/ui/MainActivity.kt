@@ -1,58 +1,48 @@
 package com.example.playlistmaker.main.ui
 
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
-import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.playlistmaker.App
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.settings.ui.SettingsActivity
-import com.example.playlistmaker.library.ui.MediaLibraryActivity
-import com.example.playlistmaker.search.ui.SearchActivity
+import com.example.playlistmaker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var ui: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if ((application as App).settings.isDarkThemeEnabled()) {
-            enableEdgeToEdge()
-        } else {
-            enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
-        }
+        ui =  ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
 
-        setContentView(R.layout.activity_main)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainFragmentContainer)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val btnSearch = findViewById<Button>(R.id.btnSearch)
-        btnSearch.setOnClickListener {
-            val goSearchIntent = Intent(this, SearchActivity::class.java)
-            startActivity(goSearchIntent)
+        enableEdgeToEdge()
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainFragmentContainer) as NavHostFragment
+        val navController = navHostFragment.navController
+        ui.bottomNav.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.audioPlayerFragment2 -> {
+                    ui.bottomNav.isVisible = false
+                }
+                else -> {
+                    ui.bottomNav.isVisible = true
+                }
+            }
         }
 
-        val btnMediaLibrary = findViewById<Button>(R.id.btnMediaLibrary)
-        btnMediaLibrary.setOnClickListener {
-            val goLibraryIntent = Intent(this, MediaLibraryActivity::class.java)
-            startActivity(goLibraryIntent)
-        }
-
-        val btnSettings = findViewById<Button>(R.id.btnSettings)
-        btnSettings.setOnClickListener {
-            val goSettingsIntent = Intent(this, SettingsActivity::class.java)
-            startActivity(goSettingsIntent)
-        }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
 }

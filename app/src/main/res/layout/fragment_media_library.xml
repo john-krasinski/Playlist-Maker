@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/media_library"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Theme.PlaylistMakerSecondary"
     android:background="?attr/colorSecondary"
-    tools:context=".library.ui.MediaLibraryActivity">
+    tools:context=".library.ui.MediaLibraryFragment">
+
     <TextView
-        android:id="@+id/btnBackFromLibrary"
+        android:id="@+id/libraryHeader"
         style="@style/HeaderText"
-        android:layout_gravity="start|center_vertical"
-        android:drawableLeft="@drawable/arrow_left"
         android:text="@string/mediaLibraryHeader"
         android:textAlignment="textStart"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,9 +21,10 @@
         android:id="@+id/libraryTabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/btnBackFromLibrary"
+        app:layout_constraintTop_toBottomOf="@id/libraryHeader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:tabTextAppearance="@style/TabLayoutTextAppearance"
         app:tabIndicatorColor="?attr/colorOnSecondary"
         app:tabBackground="?attr/colorSecondary"
         app:tabTextColor="?attr/colorOnSecondary"/>
