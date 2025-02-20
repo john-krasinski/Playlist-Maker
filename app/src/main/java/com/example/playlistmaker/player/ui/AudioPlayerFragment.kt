@@ -1,13 +1,12 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.ALBUM_NAME_KEY
@@ -23,6 +22,9 @@ import com.example.playlistmaker.TRACK_ID_KEY
 import com.example.playlistmaker.TRACK_NAME_KEY
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -55,21 +57,11 @@ class AudioPlayerFragment : Fragment() {
     private lateinit var currentTrack: Track
     private var isLiked = false
     private var isAddedToPlaylist = false
-    private val handler = Handler(Looper.getMainLooper())
-    private val updateTimeRunnable = object: Runnable {
-        override fun run() {
-            ui.timePlayed.text =  SimpleDateFormat("mm:ss", Locale.getDefault())
-                .format(player.position())
-            handler.postDelayed(this, POSITION_UPDATE_INTERVAL_MS)
-        }
-    }
+    var jobUpdateTime: Job? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (savedInstanceState == null) {
-            //  открыть экран по-умолчанию
-        }
 
         getCurrentTrack()
     }
@@ -86,15 +78,21 @@ class AudioPlayerFragment : Fragment() {
                     ui.btnPlayPause.isEnabled = true
                     ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
                     ui.timePlayed.text = "00:00"
-                    handler.removeCallbacks(updateTimeRunnable)
+                    jobUpdateTime?.cancel()
                 }
                 PlayerState.Playing -> {
                     ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.pause))
-                    handler.post(updateTimeRunnable)
+                    jobUpdateTime = lifecycleScope.launch {
+                        while (true) {
+                            delay(POSITION_UPDATE_INTERVAL_MS)
+                            ui.timePlayed.text =  SimpleDateFormat("mm:ss", Locale.getDefault())
+                                .format(player.position())
+                        }
+                    }
                 }
                 PlayerState.Paused -> {
                     ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
-                    handler.removeCallbacks(updateTimeRunnable)
+                    jobUpdateTime?.cancel()
                 }
                 else -> {}
             }
@@ -161,7 +159,6 @@ class AudioPlayerFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(updateTimeRunnable)
     }
 
     override fun onDestroyView() {

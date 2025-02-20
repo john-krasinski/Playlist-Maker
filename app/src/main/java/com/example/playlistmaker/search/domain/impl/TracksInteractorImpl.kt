@@ -1,21 +1,15 @@
 package com.example.playlistmaker.search.domain.impl
 
+import com.example.playlistmaker.search.domain.api.ResourceFoundTracks
 import com.example.playlistmaker.search.domain.api.TracksInteractor
 import com.example.playlistmaker.search.domain.api.TracksRepository
 import com.example.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
 
 class TracksInteractorImpl(private val tracksRepository: TracksRepository): TracksInteractor {
 
-    override fun searchTracks(query: String, consumer: TracksInteractor.TracksConsumer) {
+    override fun searchTracks(query: String): Flow<ResourceFoundTracks> {
 
-        val onSuccess = { tracks: List<Track> ->
-            consumer.onSuccess(tracks)
-        }
-
-        val onError = { msg: String ->
-            consumer.onError(msg)
-        }
-
-        tracksRepository.searchTracks(query, onSuccess, onError)
+        return tracksRepository.searchTracks(query)
     }
 }

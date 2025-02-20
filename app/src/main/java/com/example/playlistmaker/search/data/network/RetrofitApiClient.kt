@@ -4,36 +4,26 @@ import com.example.playlistmaker.search.data.ApiClient
 import com.example.playlistmaker.search.data.dto.ApiResponse
 import com.example.playlistmaker.search.data.dto.TrackSearchRequest
 import com.example.playlistmaker.search.data.dto.TrackSearchResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 
 class RetrofitApiClient(private val searchApi: SearchApi): ApiClient {
 
-    override fun doRequest(dto: Any, onSuccess: (ApiResponse) -> Unit, onError: (String) -> Unit) {
+    override suspend fun doRequest(dto: Any): ApiResponse {
 
         if (dto is TrackSearchRequest) {
 
-            searchApi.doSearch(dto.query).enqueue(object : Callback<TrackSearchResponse> {
-                override fun onResponse(
-                    call: Call<TrackSearchResponse>,
-                    response: Response<TrackSearchResponse>
-                ) {
-                    val body = response.body() ?: ApiResponse()
-                    body.resultCode = response.code()
-                    onSuccess.invoke(body)
+            return withContext(Dispatchers.IO) {
+                try {
+                    searchApi.doSearch(dto.query).apply { resultCode = 200 }
+                } catch (e: Throwable) {
+                    ApiResponse().apply { resultCode = 500 }
                 }
-
-                override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
-                    onError.invoke(t.toString())
-                }
-            })
+            }
 
         } else {
-            onError.invoke("Bad request")
+            return ApiResponse().apply { resultCode = 400 }
         }
     }
 }
