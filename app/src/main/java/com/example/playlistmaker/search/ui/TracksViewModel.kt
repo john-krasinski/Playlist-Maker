@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.search.domain.api.ResourceFoundTracks
 import com.example.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.search.domain.api.TracksInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.tracks.TrackSearchState
+import kotlinx.coroutines.launch
 
 class TracksViewModel(
     private val tracksInteractor: TracksInteractor,
@@ -40,21 +43,15 @@ class TracksViewModel(
         if (query.isNotEmpty()) {
             _state.postValue(TrackSearchState.Loading)
 
-            tracksInteractor.searchTracks(query, object : TracksInteractor.TracksConsumer {
-
-                override fun onSuccess(foundTracks: List<Track>) {
-
-                    if (foundTracks.isEmpty()) {
-                        _state.postValue(TrackSearchState.NotFound)
-                    } else {
-                        _state.postValue(TrackSearchState.Content(foundTracks))
+            viewModelScope.launch {
+                tracksInteractor.searchTracks(query).collect { resourse ->
+                    when (resourse) {
+                        is ResourceFoundTracks.Error -> _state.postValue(TrackSearchState.Error(resourse.message))
+                        ResourceFoundTracks.NotFound -> _state.postValue(TrackSearchState.NotFound)
+                        is ResourceFoundTracks.Content -> _state.postValue(TrackSearchState.Content(resourse.foundTracks))
                     }
                 }
-
-                override fun onError(message: String) {
-                    _state.postValue(TrackSearchState.Error(message))
-                }
-            })
+            }
         }
     }
 

@@ -6,23 +6,25 @@ import com.example.playlistmaker.search.data.dto.TrackSearchResponse
 import com.example.playlistmaker.search.domain.api.TracksRepository
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.data.ApiClient
+import com.example.playlistmaker.search.domain.api.ResourceFoundTracks
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TracksRepositoryImpl(private val apiClient: ApiClient): TracksRepository {
 
-    override fun searchTracks(query: String, onSuccess: (List<Track>) -> Unit, onError: (String) -> Unit) {
-
-        val onApiSuccess = { resp: ApiResponse ->
-            val foundTracks = resp as TrackSearchResponse
-            if (foundTracks.resultCount > 0 && foundTracks.results.isNotEmpty()) {
-                val tracks = foundTracks.results.map {
-                    Track.from(it)
+    override fun searchTracks(query: String): Flow<ResourceFoundTracks> = flow {
+        val response = apiClient.doRequest(TrackSearchRequest(query))
+        when (response.resultCode) {
+            200 -> {
+                with (response as TrackSearchResponse) {
+                    if (response.resultCount > 0 && response.results.isNotEmpty()) {
+                        val tracks = response.results.map { Track.from(it) }
+                        emit(ResourceFoundTracks.Content(tracks))
+                    } else {
+                        emit(ResourceFoundTracks.NotFound)
+                    }
                 }
-                onSuccess.invoke(tracks)
-            } else {
-                onSuccess.invoke(emptyList())
-            }
+            } else -> emit(ResourceFoundTracks.Error("Ошибка сервера"))
         }
-
-        apiClient.doRequest(TrackSearchRequest(query), onApiSuccess, onError)
     }
 }

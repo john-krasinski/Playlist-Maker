@@ -2,8 +2,6 @@ package com.example.playlistmaker.search.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -14,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
@@ -24,6 +23,9 @@ import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.error.SearchErrorAdapter
 import com.example.playlistmaker.search.ui.tracks.TrackAdapter
 import com.example.playlistmaker.search.ui.tracks.TrackSearchState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -40,8 +42,7 @@ class SearchFragment : Fragment() {
     var query: String = ""
     private var historyVisible = true
 
-    val handler = Handler(Looper.getMainLooper())
-    val searchRunnable = Runnable { doSearch(query) }
+    var jobDebounceSearch: Job? = null
 
     private val onTrackClick = { track: Track ->
         tracksViewModel.addToHistory(track)
@@ -135,7 +136,7 @@ class SearchFragment : Fragment() {
                 if (s.isNullOrEmpty()) {
                     if (ui.searchBox.hasFocus()) {
                         setHistoryVisibility(historyTracks.isNotEmpty())
-                        handler.removeCallbacks(searchRunnable)
+                        jobDebounceSearch?.cancel()
                     }
                 } else {
                     query = s.toString()
@@ -151,7 +152,7 @@ class SearchFragment : Fragment() {
         ui.searchBox.addTextChangedListener(simpleTextWatcher)
         ui.searchBox.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                handler.removeCallbacks(searchRunnable)
+                jobDebounceSearch?.cancel()
                 doSearch(query)
                 true
             }
@@ -165,8 +166,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun debounceSearch() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
+        jobDebounceSearch?.cancel()
+        jobDebounceSearch = lifecycleScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY_MS)
+            doSearch(query)
+        }
     }
 
     private fun resetSearch() {
