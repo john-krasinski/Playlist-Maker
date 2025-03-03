@@ -167,10 +167,6 @@ class AudioPlayerFragment : Fragment() {
         player.pausePlayer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _ui = null

@@ -139,8 +139,13 @@ class SearchFragment : Fragment() {
                         jobDebounceSearch?.cancel()
                     }
                 } else {
-                    query = s.toString()
-                    debounceSearch()
+                    val newQuery = s.toString()
+                    //  disable unneeded search triggered by
+                    //  onTextChanged() after returning from player screen
+                    if (!query.equals(newQuery)) {
+                        query = s.toString()
+                        debounceSearch()
+                    }
                 }
                 ui.searchBoxClearIcon.isVisible = !s.isNullOrEmpty()
             }
@@ -236,7 +241,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun reDrawHistory() {
-//        ui.searchRecycler.adapter = TrackAdapter(historyTracks, onTrackClick)
         ui.searchRecycler.adapter?.notifyDataSetChanged()
     }
 
