@@ -11,7 +11,7 @@
         android:gravity="top"
         android:orientation="vertical">
         <ImageView
-            android:id="@+id/impEmptyFavs"
+            android:id="@+id/imgEmptyFavs"
             style="@style/ErrorPageImg"
             android:src="@drawable/track_not_found"/>
         <TextView
