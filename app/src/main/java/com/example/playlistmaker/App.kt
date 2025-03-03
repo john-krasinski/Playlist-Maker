@@ -23,6 +23,7 @@ const val COUNTRY_KEY = "country"
 const val TRACK_DURATION_KEY = "duration"
 const val ARTWORK_URL_KEY = "artwork_url"
 const val PREVIEW_URL_KEY = "preview_url"
+const val IS_FAVOURITE_TRACK_KEY = "is_fav"
 
 class App : Application() {
 

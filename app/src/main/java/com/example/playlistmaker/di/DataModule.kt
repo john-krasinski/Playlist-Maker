@@ -1,8 +1,12 @@
 package com.example.playlistmaker.di
 
 import android.app.Application.MODE_PRIVATE
-import android.content.Context
+import androidx.room.Room
 import com.example.playlistmaker.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.library.data.db.DB_NAME
+import com.example.playlistmaker.library.data.db.FavTracksDB
+import com.example.playlistmaker.library.data.db.FavTracksDatabaseRepository
+import com.example.playlistmaker.library.domain.db.FavTracksRepository
 import com.example.playlistmaker.search.data.ApiClient
 import com.example.playlistmaker.search.data.SearchHistory
 import com.example.playlistmaker.search.data.impl.LocalTracksHistoryRepositoryImpl
@@ -61,4 +65,14 @@ val dataModule = module {
     }
 
     factory { Gson() }
+
+    single {
+        Room.databaseBuilder(androidContext(), FavTracksDB::class.java, DB_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    single<FavTracksRepository> {
+        FavTracksDatabaseRepository(get())
+    }
 }

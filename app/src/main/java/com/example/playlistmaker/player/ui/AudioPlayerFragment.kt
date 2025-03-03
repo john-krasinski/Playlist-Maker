@@ -14,6 +14,7 @@ import com.example.playlistmaker.ARTIST_NAME_KEY
 import com.example.playlistmaker.ARTWORK_URL_KEY
 import com.example.playlistmaker.COUNTRY_KEY
 import com.example.playlistmaker.GENRE_KEY
+import com.example.playlistmaker.IS_FAVOURITE_TRACK_KEY
 import com.example.playlistmaker.PREVIEW_URL_KEY
 import com.example.playlistmaker.R
 import com.example.playlistmaker.RELEASE_YEAR_KEY
@@ -50,12 +51,13 @@ class AudioPlayerFragment : Fragment() {
                 COUNTRY_KEY to track.country,
                 TRACK_DURATION_KEY to track.trackTime,
                 ARTWORK_URL_KEY to track.artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),
-                PREVIEW_URL_KEY to track.previewUrl
+                PREVIEW_URL_KEY to track.previewUrl,
+                IS_FAVOURITE_TRACK_KEY to track.isFavourite
             )
     }
 
     private lateinit var currentTrack: Track
-    private var isLiked = false
+
     private var isAddedToPlaylist = false
     var jobUpdateTime: Job? = null
 
@@ -71,6 +73,10 @@ class AudioPlayerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _ui = FragmentAudioPlayerBinding.inflate(inflater)
+
+        player.isFavourite.observe(viewLifecycleOwner) { isLiked ->
+            drawLikeButton(isLiked)
+        }
 
         player.curState().observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -98,6 +104,8 @@ class AudioPlayerFragment : Fragment() {
             }
         }
 
+        drawLikeButton(currentTrack.isFavourite)
+
         ui.trackName.text = currentTrack.trackName
         ui.artistName.text = currentTrack.artistName
         ui.detailsDurationValue.text = currentTrack.trackTime
@@ -122,14 +130,7 @@ class AudioPlayerFragment : Fragment() {
         }
 
         ui.btnLike.setOnClickListener {
-            ui.btnLike.setImageDrawable(
-                if (isLiked) {
-                    requireContext().getDrawable(R.drawable.like_empty)
-                } else {
-                    requireContext().getDrawable(R.drawable.like)
-                }
-            )
-            isLiked = !isLiked
+            player.processLikeClick()
         }
 
         ui.btnAddToPlaylist.setOnClickListener {
@@ -151,14 +152,19 @@ class AudioPlayerFragment : Fragment() {
         return root
     }
 
+    private fun drawLikeButton(isLiked: Boolean) {
+        ui.btnLike.setImageDrawable(
+            if (isLiked) {
+                requireContext().getDrawable(R.drawable.like)
+            } else {
+                requireContext().getDrawable(R.drawable.like_empty)
+            }
+        )
+    }
 
     override fun onPause() {
         super.onPause()
         player.pausePlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onDestroyView() {
@@ -179,7 +185,8 @@ class AudioPlayerFragment : Fragment() {
         val trackTime = arguments?.getString(TRACK_DURATION_KEY) ?: unknown
         val artworkUrl = arguments?.getString(ARTWORK_URL_KEY) ?: ""
         val previewUrl = arguments?.getString(PREVIEW_URL_KEY) ?: ""
+        val isFavourite = arguments?.getBoolean(IS_FAVOURITE_TRACK_KEY) ?: false
 
-        currentTrack = Track(trackId,trackName,artistName,albumName,trackTime,artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),country,genre,year,previewUrl)
+        currentTrack = Track(trackId,trackName,artistName,albumName,trackTime,artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),country,genre,year,previewUrl,isFavourite)
     }
 }

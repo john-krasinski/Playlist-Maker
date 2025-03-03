@@ -1,7 +1,5 @@
 package com.example.playlistmaker.search.data.impl
 
-import android.content.Context
-import com.example.playlistmaker.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.data.SearchHistory
 import com.example.playlistmaker.search.domain.api.TracksHistoryRepository
@@ -15,12 +13,12 @@ class LocalTracksHistoryRepositoryImpl(private val history: SearchHistory): Trac
     }
 
     override fun forgetTrack(track: Track): List<Track>{
-        history.remove(track.into())
+        history.remove(track.intoHistory())
         return getTracks()
     }
 
     override fun addTrack(track: Track): List<Track> {
-        history.add(track.into())
+        history.add(track.intoHistory())
         return getTracks()
     }
 
