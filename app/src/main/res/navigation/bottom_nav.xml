@@ -42,7 +42,7 @@
         android:id="@+id/favouriteTracksFragment"
         android:name="com.example.playlistmaker.library.ui.FavouriteTracksFragment"
         android:label="fragment_favourite_tracks"
-        tools:layout="@layout/fragment_favourite_tracks" >
+        tools:layout="@layout/fragment_favourites" >
     </fragment>
     <fragment
         android:id="@+id/playlistsFragment"
