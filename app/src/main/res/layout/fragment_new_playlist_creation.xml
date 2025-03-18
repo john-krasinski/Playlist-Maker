@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/colorSecondary"
+    tools:context=".library.ui.NewPlaylistCreationFragment">
+
+    <TextView
+        android:id="@+id/newPlaylistHeader"
+        style="@style/NewPlaylistHeaderText"
+        android:text="Новый плейлист"
+        android:drawableStart="@drawable/arrow_left"
+        android:paddingStart="0dp"
+        android:textAlignment="textStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:backgroundTint="?attr/colorSecondary"
+        android:id="@+id/newPlaylistImage"
+        android:layout_width="312dp"
+        android:layout_height="312dp"
+        android:layout_marginTop="26dp"
+        app:shapeAppearance="@style/RoundedShapeAppearance"
+        app:layout_constraintTop_toBottomOf="@id/newPlaylistHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/add_playlist_image_placeholder"
+        />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/newPlaylistNameContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/newPlaylistImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Название*"
+        app:boxCollapsedPaddingTop="0dp"
+        app:boxStrokeColor="@color/edit_text_box_color"
+        style="@style/NewPlaylistEditText">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/newPlaylistName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/newPlaylistDescriptionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/newPlaylistNameContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="Описание"
+        app:boxCollapsedPaddingTop="0dp"
+        app:boxStrokeColor="@color/edit_text_box_color"
+        style="@style/NewPlaylistEditText">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/newPlaylistDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnNewPlaylistCreate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/rounded_button"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="32dp"
+        android:textColor="@color/white"
+        android:text="Создать"/>
+
+    <View
+        android:id="@+id/dialogBackLayer"
+        android:background="#99000000"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

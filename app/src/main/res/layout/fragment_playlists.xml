@@ -7,7 +7,7 @@
     tools:context=".library.ui.PlaylistsFragment">
 
     <Button
-        android:id="@+id/errorPageBtn"
+        android:id="@+id/btnNewPlaylist"
         style="@style/ErrorPageButton"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,4 +27,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/msgNoPlaylists"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/emptyPlaylistsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="msgNoPlaylists,imgNoPlaylists"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/libraryPlaylistsRecycler"
+        app:layout_constraintTop_toBottomOf="@id/btnNewPlaylist"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constrainedHeight="true"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="4dp"
+        android:layout_marginBottom="56dp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

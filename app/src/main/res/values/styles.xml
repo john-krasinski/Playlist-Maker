@@ -48,6 +48,14 @@
         <item name="android:layout_height">@dimen/headerHeight</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
     </style>
+    <style name="NewPlaylistHeaderText" parent="AppFontFamilyBold">
+        <item name="android:textSize">@dimen/headerTextSize</item>
+        <item name="android:padding">@dimen/headerTextPadding</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/headerHeight</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
 
     <style name="SettingsItemText" parent="AppFontFamily">
         <item name="android:backgroundTint">@color/white</item>
@@ -82,13 +90,13 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="FoundTrackName">
+    <style name="FoundTrackName" parent="AppFontFamily">
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">@dimen/foundTrackNameTextSize</item>
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="FoundTrackDetails">
+    <style name="FoundTrackDetails" parent="AppFontFamily">
         <item name="android:textColor">@color/grey</item>
         <item name="android:textSize">@dimen/foundTrackDetailsTextSize</item>
         <item name="android:singleLine">true</item>
@@ -112,6 +120,15 @@
         <item name="android:textSize">@dimen/errorPageTextSize</item>
         <item name="android:textAlignment">center</item>
         <item name="android:paddingVertical">@dimen/errorPageTextPaddingV</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+    </style>
+
+    <style name="AddPlaylistHeader">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/errorPageTextSize</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:padding">16dp</item>
         <item name="fontFamily">@font/ys_display_medium</item>
     </style>
 
@@ -181,5 +198,19 @@
         <item name="android:textAllCaps">false</item>
         <item name="fontFamily">@font/ys_display_medium</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="NewPlaylistEditText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="hintTextColor">@color/edit_text_selector_color</item>
+        <item name="android:textColorHint">@color/edit_text_selector_color</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+<!--        <item name="android:textColorHint">@color/button_color_selector</item>-->
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="RoundedShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
     </style>
 </resources>
