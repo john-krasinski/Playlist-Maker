@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
-import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,16 +35,16 @@ class SearchFragment : Fragment() {
     private var _ui: FragmentSearchBinding? = null
     private val ui get() = _ui!!
 
-    private val tracksViewModel: TracksViewModel by viewModel<TracksViewModel>()
+    private val searchTracksViewModel: SearchTracksViewModel by viewModel<SearchTracksViewModel>()
 
-    private var historyTracks :List<Track> = emptyList()
+    private var historyTracks: MutableList<Track> = mutableListOf()
     var query: String = ""
     private var historyVisible = true
 
     var jobDebounceSearch: Job? = null
 
     private val onTrackClick = { track: Track ->
-        tracksViewModel.addToHistory(track)
+        searchTracksViewModel.addToHistory(track)
         openTrackInPlayer(track)
     }
 
@@ -62,15 +61,15 @@ class SearchFragment : Fragment() {
     ): View {
         _ui = FragmentSearchBinding.inflate(layoutInflater)
 
-        tracksViewModel.state.observe(viewLifecycleOwner) {
+        searchTracksViewModel.state.observe(viewLifecycleOwner) {
             renderSearchState(it)
         }
 
         ui.searchRecycler.layoutManager = LinearLayoutManager(requireContext())
-        ui.searchRecycler.adapter = TrackAdapter(listOf())
+        ui.searchRecycler.adapter = TrackAdapter(historyTracks, onTrackClick)
 
         ui.btnClearSearchHistory.setOnClickListener {
-            tracksViewModel.clearHistory()
+            searchTracksViewModel.clearHistory()
             setHistoryVisibility(false)
         }
 
@@ -92,7 +91,8 @@ class SearchFragment : Fragment() {
     private fun renderSearchState(state: TrackSearchState) {
         when (state) {
             is TrackSearchState.Initial -> {
-                historyTracks = state.historyTracks
+                historyTracks.clear()
+                historyTracks.addAll(state.historyTracks)
                 setHistoryVisibility(historyTracks.isNotEmpty())
                 if (historyVisible) {
                     reDrawHistory()
@@ -139,8 +139,13 @@ class SearchFragment : Fragment() {
                         jobDebounceSearch?.cancel()
                     }
                 } else {
-                    query = s.toString()
-                    debounceSearch()
+                    val newQuery = s.toString()
+                    //  disable unneeded search triggered by
+                    //  onTextChanged() after returning from player screen
+                    if (!query.equals(newQuery)) {
+                        query = s.toString()
+                        debounceSearch()
+                    }
                 }
                 ui.searchBoxClearIcon.isVisible = !s.isNullOrEmpty()
             }
@@ -179,7 +184,7 @@ class SearchFragment : Fragment() {
         ui.searchRecycler.adapter = TrackAdapter(listOf())
         ui.searchBox.setText("")
         ui.searchBox.isFocusedByDefault = true
-        tracksViewModel.resetSearch()
+        searchTracksViewModel.resetSearch()
     }
 
     private fun showProgress() {
@@ -193,7 +198,7 @@ class SearchFragment : Fragment() {
 
     private fun doSearch(text: String) {
         showProgress()
-        tracksViewModel.search(text)
+        searchTracksViewModel.search(text)
     }
 
     private fun showFoundTracks(tracks: List<Track>) {
@@ -236,13 +241,19 @@ class SearchFragment : Fragment() {
     }
 
     private fun reDrawHistory() {
-        ui.searchRecycler.adapter = TrackAdapter(historyTracks, onTrackClick)
+        ui.searchRecycler.adapter?.notifyDataSetChanged()
     }
 
     private fun openTrackInPlayer(track: Track) {
+        track.isFavourite = searchTracksViewModel.isTrackFavourite(track)
         findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment22, AudioPlayerFragment.createArgs(track))
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        searchTracksViewModel.refreshViewModel()
+    }
 
     companion object {
         const val SEARCH_QUERY = "PRODUCT_AMOUNT"
