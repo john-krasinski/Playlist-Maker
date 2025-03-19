@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.library.domain.db.FavTracksInteractor
+import com.example.playlistmaker.library.domain.db.PlaylistsInteractor
+import com.example.playlistmaker.library.domain.models.Playlist
 import com.example.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +21,8 @@ enum class PlayerState {
 
 class PlayerViewModel(
     val track: Track,
-    private val favTracksInteractor: FavTracksInteractor
+    private val favTracksInteractor: FavTracksInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ): ViewModel() {
 
     private val playerState = MutableLiveData<PlayerState>(PlayerState.Default)
@@ -28,10 +31,14 @@ class PlayerViewModel(
     private val _isFavourite = MutableLiveData<Boolean>(track.isFavourite)
     val isFavourite:LiveData<Boolean> get() = _isFavourite
 
+    private val _playlists = MutableLiveData<List<Playlist>>(listOf())
+    val playlists: LiveData<List<Playlist>> get() = _playlists
+
     private val mediaPlayer = MediaPlayer()
 
     init {
         preparePlayer(track.previewUrl)
+        updatePlaylists()
     }
 
     fun processLikeClick() {
@@ -85,21 +92,24 @@ class PlayerViewModel(
 
     fun position() = mediaPlayer.currentPosition
 
+    fun addToPlaylist(playlist: Playlist) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlist.addTrack(track)
+            playlistsInteractor.updatePlaylist(playlist)
+        }
+    }
+
+    fun updatePlaylists() {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor.getPlaylists().collect {
+                _playlists.postValue(it)
+            }
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         mediaPlayer.release()
     }
 
-    companion object {
-        fun factory(
-            track: Track,
-            favTracksInteractor: FavTracksInteractor
-        ): ViewModelProvider.Factory {
-            return viewModelFactory {
-                initializer {
-                    PlayerViewModel(track,favTracksInteractor)
-                }
-            }
-        }
-    }
 }

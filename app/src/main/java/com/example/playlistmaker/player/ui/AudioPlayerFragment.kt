@@ -5,9 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.ALBUM_NAME_KEY
 import com.example.playlistmaker.ARTIST_NAME_KEY
@@ -22,7 +26,9 @@ import com.example.playlistmaker.TRACK_DURATION_KEY
 import com.example.playlistmaker.TRACK_ID_KEY
 import com.example.playlistmaker.TRACK_NAME_KEY
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
+import com.example.playlistmaker.library.domain.models.Playlist
 import com.example.playlistmaker.search.domain.models.Track
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,6 +44,11 @@ class AudioPlayerFragment : Fragment() {
     private val player: PlayerViewModel by viewModel<PlayerViewModel> { parametersOf(currentTrack) }
     private var _ui: FragmentAudioPlayerBinding? = null
     private val ui get() = _ui!!
+
+    private var playlists = mutableListOf<Playlist>()
+    private val onPlaylistClick: (Playlist) -> Unit = { playlist ->
+        handleAddingToPlaylist(playlist)
+    }
 
     companion object {
         fun createArgs(track: Track) =
@@ -58,7 +69,7 @@ class AudioPlayerFragment : Fragment() {
 
     private lateinit var currentTrack: Track
 
-    private var isAddedToPlaylist = false
+    private var hideBottomSheet = true
     var jobUpdateTime: Job? = null
 
 
@@ -78,34 +89,108 @@ class AudioPlayerFragment : Fragment() {
             drawLikeButton(isLiked)
         }
 
+        player.playlists.observe(viewLifecycleOwner) {
+            playlists.clear()
+            playlists.addAll(it)
+            ui.createdPlaylistsRecycler.adapter?.notifyDataSetChanged()
+        }
+
         player.curState().observe(viewLifecycleOwner) { state ->
             when (state) {
-                PlayerState.Prepared -> {
-                    ui.btnPlayPause.isEnabled = true
-                    ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
-                    ui.timePlayed.text = "00:00"
-                    jobUpdateTime?.cancel()
-                }
-                PlayerState.Playing -> {
-                    ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.pause))
-                    jobUpdateTime = lifecycleScope.launch {
-                        while (true) {
-                            delay(POSITION_UPDATE_INTERVAL_MS)
-                            ui.timePlayed.text =  SimpleDateFormat("mm:ss", Locale.getDefault())
-                                .format(player.position())
-                        }
-                    }
-                }
-                PlayerState.Paused -> {
-                    ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
-                    jobUpdateTime?.cancel()
-                }
+                PlayerState.Prepared -> { drawPlayerPrepared() }
+                PlayerState.Playing -> { drawPlayerPlaying() }
+                PlayerState.Paused -> { drawPlayerPaused() }
                 else -> {}
             }
         }
 
         drawLikeButton(currentTrack.isFavourite)
+        ui.btnLike.setOnClickListener {
+            player.processLikeClick()
+        }
 
+        drawTrackInfo()
+
+        ui.btnPlayPause.isEnabled = false
+        ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
+        ui.btnPlayPause.setOnClickListener {
+            player.playbackControl()
+        }
+
+        drawPlaylistButton()
+
+        ui.btnBackFromPlayer.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        return ui.root
+    }
+
+    private fun drawPlayerPrepared() {
+        ui.btnPlayPause.isEnabled = true
+        ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
+        ui.timePlayed.text = "00:00"
+        jobUpdateTime?.cancel()
+    }
+
+    private fun drawPlayerPlaying() {
+        ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.pause))
+        jobUpdateTime = lifecycleScope.launch {
+            while (true) {
+                delay(POSITION_UPDATE_INTERVAL_MS)
+                ui.timePlayed.text =  SimpleDateFormat("mm:ss", Locale.getDefault())
+                    .format(player.position())
+            }
+        }
+    }
+
+    private fun drawPlayerPaused() {
+        ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
+        jobUpdateTime?.cancel()
+    }
+
+    private fun drawPlaylistButton() {
+
+        ui.btnAddToPlaylist.setImageDrawable(requireContext().getDrawable(R.drawable.add))
+
+        val bottomSheet = BottomSheetBehavior.from(ui.bottomsheetAddToPlaylist)
+        drawBottomSheet(bottomSheet)
+
+        ui.btnAddToPlaylist.setOnClickListener {
+            bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+    }
+
+    private fun drawBottomSheet(bottomSheet: BottomSheetBehavior<ConstraintLayout>) {
+        if (hideBottomSheet) {
+            bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        ui.createdPlaylistsRecycler.layoutManager = LinearLayoutManager(requireContext())
+        ui.createdPlaylistsRecycler.adapter = BottomSheetPlaylistsAdapter(playlists, onPlaylistClick)
+
+        ui.newPlaylistBtn.setOnClickListener {
+            hideBottomSheet = false
+            findNavController().navigate(R.id.newPlaylistCreationFragment)
+        }
+
+        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        ui.bottomSheetBackLayer.isVisible = false
+                        player.updatePlaylists()
+                    }
+                    else -> {
+                        ui.bottomSheetBackLayer.isVisible = true
+                    }
+                }
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+    }
+
+    private fun drawTrackInfo() {
         ui.trackName.text = currentTrack.trackName
         ui.artistName.text = currentTrack.artistName
         ui.detailsDurationValue.text = currentTrack.trackTime
@@ -122,34 +207,6 @@ class AudioPlayerFragment : Fragment() {
                 .centerCrop()
                 .into(ui.albumImage)
         }
-
-        ui.btnPlayPause.isEnabled = false
-        ui.btnPlayPause.setImageDrawable(requireContext().getDrawable(R.drawable.play))
-        ui.btnPlayPause.setOnClickListener {
-            player.playbackControl()
-        }
-
-        ui.btnLike.setOnClickListener {
-            player.processLikeClick()
-        }
-
-        ui.btnAddToPlaylist.setOnClickListener {
-            ui.btnAddToPlaylist.setImageDrawable(
-                if (isAddedToPlaylist) {
-                    requireContext().getDrawable(R.drawable.add)
-                } else {
-                    requireContext().getDrawable(R.drawable.in_playlist)
-                }
-            )
-            isAddedToPlaylist = !isAddedToPlaylist
-        }
-
-        ui.btnBackFromPlayer.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        val root = ui.root
-        return root
     }
 
     private fun drawLikeButton(isLiked: Boolean) {
@@ -160,6 +217,33 @@ class AudioPlayerFragment : Fragment() {
                 requireContext().getDrawable(R.drawable.like_empty)
             }
         )
+    }
+
+    private fun handleAddingToPlaylist(playlist: Playlist) {
+        if (playlist.trackIDs.contains(player.track.trackId)) {
+            Toast
+                .makeText(
+                    requireContext(),
+                    requireContext().getString(R.string.alreadyInPlaylist, playlist.playlistName),
+                    Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            player.addToPlaylist(playlist)
+            ui.createdPlaylistsRecycler.adapter?.notifyDataSetChanged()
+            Toast
+                .makeText(
+                    requireContext(),
+                    requireContext().getString(R.string.successAddingToPlaylist, playlist.playlistName),
+                    Toast.LENGTH_SHORT
+                )
+                .show()
+            BottomSheetBehavior.from(ui.bottomsheetAddToPlaylist).state = BottomSheetBehavior.STATE_HIDDEN
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        player.updatePlaylists()
     }
 
     override fun onPause() {

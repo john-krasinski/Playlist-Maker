@@ -13,7 +13,7 @@ import com.example.playlistmaker.search.data.SearchError
 class SearchErrorViewHolder(item: View) : RecyclerView.ViewHolder(item) {
     private val message: TextView = item.findViewById(R.id.errorPageMsg)
     private val image: ImageView = item.findViewById(R.id.errorPageImg)
-    private val button: Button = item.findViewById(R.id.errorPageBtn)
+    private val button: Button = item.findViewById(R.id.btnNewPlaylist)
 
     fun bind(model: SearchError) {
         message.text = model.message

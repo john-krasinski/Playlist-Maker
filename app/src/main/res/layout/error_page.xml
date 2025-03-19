@@ -19,7 +19,7 @@
             style="@style/ErrorPageText"
             android:text="@string/errorTracksNotFound"/>
         <Button
-            android:id="@+id/errorPageBtn"
+            android:id="@+id/btnNewPlaylist"
             style="@style/ErrorPageButton"
             android:visibility="gone"
             tools:text="Обновить"

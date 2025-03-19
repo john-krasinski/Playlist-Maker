@@ -1,11 +1,9 @@
 package com.example.playlistmaker.search.domain.models
 
 import android.icu.text.SimpleDateFormat
-import com.example.playlistmaker.library.data.db.FavTrackEntity
+import com.example.playlistmaker.library.data.db.fav_tracks.FavTrackEntity
 import com.example.playlistmaker.search.data.dto.LocalHistoryTrackDto
 import com.example.playlistmaker.search.data.dto.ResponseTrackDto
-import java.sql.Timestamp
-import java.util.Date
 import java.util.Locale
 
 data class Track(

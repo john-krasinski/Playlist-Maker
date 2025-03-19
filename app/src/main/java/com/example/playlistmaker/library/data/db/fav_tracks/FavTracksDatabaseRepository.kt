@@ -1,12 +1,13 @@
-package com.example.playlistmaker.library.data.db
+package com.example.playlistmaker.library.data.db.fav_tracks
 
+import com.example.playlistmaker.library.data.db.AppDatabase
 import com.example.playlistmaker.library.domain.db.FavTracksRepository
 import com.example.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class FavTracksDatabaseRepository(
-    private val database: FavTracksDB
+    private val database: AppDatabase
 ): FavTracksRepository {
 
     override suspend fun insertTrack(track: Track) {
