@@ -44,4 +44,5 @@
     </plurals>
     <string name="alreadyInPlaylist">Трек уже добавлен в плейлист %s</string>
     <string name="successAddingToPlaylist">Добавлено в плейлист %s</string>
+    <string name="playlistDuration">%$1d %$2s  •  </string>
 </resources>

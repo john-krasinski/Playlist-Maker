@@ -213,4 +213,11 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
     </style>
+
+    <style name="PlaylistAction" parent="AppFontFamily">
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">21dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
 </resources>

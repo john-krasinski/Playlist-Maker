@@ -38,4 +38,10 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor): 
             playlistsInteractor.deletePlaylist(playlist)
         }
     }
+
+    fun updatePlaylist(playlist: Playlist) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor.updatePlaylist(playlist)
+        }
+    }
 }
