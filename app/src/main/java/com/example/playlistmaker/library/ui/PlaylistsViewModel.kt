@@ -19,8 +19,7 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor): 
             playlistsInteractor.createPlaylist(Playlist(
                 playlistName = name,
                 description = description,
-                coverPath = cover,
-                trackIDs = listOf()
+                coverPath = cover
             ))
         }
     }
@@ -41,7 +40,7 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor): 
 
     fun updatePlaylist(playlist: Playlist) {
         viewModelScope.launch(Dispatchers.IO) {
-            playlistsInteractor.updatePlaylist(playlist)
+            playlistsInteractor.updatePlaylistInfo(playlist)
         }
     }
 }

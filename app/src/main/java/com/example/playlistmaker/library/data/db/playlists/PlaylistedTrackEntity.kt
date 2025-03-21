@@ -1,12 +1,12 @@
-package com.example.playlistmaker.library.data.db.fav_tracks
+package com.example.playlistmaker.library.data.db.playlists
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-const val FAV_TRACKS_TABLE_NAME = "fav_tracks"
+const val PLAYLISTED_TRACKS_TABLE_NAME = "playlisted_tracks"
 
-@Entity(tableName = FAV_TRACKS_TABLE_NAME)
-data class FavTrackEntity(
+@Entity(tableName = PLAYLISTED_TRACKS_TABLE_NAME)
+data class PlaylistedTrackEntity(
     @PrimaryKey(autoGenerate = false)
     val trackId: Int,
     val trackName: String,
@@ -20,4 +20,3 @@ data class FavTrackEntity(
     val previewUrl: String,
     val timestamp: Long
 )
-

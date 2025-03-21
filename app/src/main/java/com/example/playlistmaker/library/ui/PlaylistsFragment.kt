@@ -1,6 +1,5 @@
 package com.example.playlistmaker.library.ui
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -29,14 +28,7 @@ class PlaylistsFragment : Fragment() {
 
     private var playlists = mutableListOf<Playlist>()
     private var onPlaylistClick: (Playlist) -> Unit = { playlist ->
-        Toast.makeText(
-            requireContext(),
-            "Open playlist ${playlist.playlistName}",
-            Toast.LENGTH_SHORT)
-            .show()
-        viewmodel.deletePlaylist(playlist)
-        playlists.remove(playlist)
-        drawPlaylists()
+
     }
 
     override fun onCreateView(

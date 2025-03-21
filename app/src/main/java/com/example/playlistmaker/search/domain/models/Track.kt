@@ -2,6 +2,7 @@ package com.example.playlistmaker.search.domain.models
 
 import android.icu.text.SimpleDateFormat
 import com.example.playlistmaker.library.data.db.fav_tracks.FavTrackEntity
+import com.example.playlistmaker.library.data.db.playlists.PlaylistedTrackEntity
 import com.example.playlistmaker.search.data.dto.LocalHistoryTrackDto
 import com.example.playlistmaker.search.data.dto.ResponseTrackDto
 import java.util.Locale
@@ -70,10 +71,42 @@ data class Track(
                 isFavourite = true
             )
         }
+
+        fun from(src: PlaylistedTrackEntity): Track {
+            return Track(
+                trackId = src.trackId,
+                trackName = src.trackName,
+                trackTime = src.trackTime,
+                artistName = src.artistName,
+                year = src.year,
+                artworkUrl = src.artworkUrl,
+                country = src.country,
+                previewUrl = src.previewUrl,
+                albumName = src.albumName,
+                genre = src.genre,
+                isFavourite = false
+            )
+        }
     }
 
-    fun intoDB(): FavTrackEntity {
+    fun intoFavDB(): FavTrackEntity {
         return FavTrackEntity(
+            trackId = this.trackId,
+            trackName = this.trackName,
+            trackTime = this.trackTime,
+            artistName = this.artistName,
+            year = this.year,
+            artworkUrl = this.artworkUrl,
+            country = this.country,
+            previewUrl = this.previewUrl,
+            albumName = this.albumName,
+            genre = this.genre,
+            timestamp = System.currentTimeMillis()
+        )
+    }
+
+    fun intoPlaylistedDB(): PlaylistedTrackEntity {
+        return PlaylistedTrackEntity(
             trackId = this.trackId,
             trackName = this.trackName,
             trackTime = this.trackTime,
