@@ -24,9 +24,7 @@ data class PlaylistDetails(
         entityColumn = "trackId",
         entity = PlaylistedTrackEntity::class,
         associateBy = Junction(
-            PlaylistTrackCrossRefEntity::class,
-            parentColumn = "playlistId",
-            entityColumn = "trackId"
+            PlaylistTrackCrossRefEntity::class
         )
     ) val tracks: List<PlaylistedTrackEntity>
 )

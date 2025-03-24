@@ -28,4 +28,9 @@ class FavTracksDatabaseRepository(
         emit(database.favouriteTrackDao().getTrackIds())
     }
 
+    override suspend fun isFavourite(id: Int): Boolean {
+        val ids = database.favouriteTrackDao().findTrackId(id)
+        return ids.isNotEmpty()
+    }
+
 }

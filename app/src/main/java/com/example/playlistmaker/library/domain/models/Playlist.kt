@@ -41,6 +41,16 @@ data class Playlist(
 //                trackIDs = trackIDs
             )
         }
+
+        fun fromFullInfo(fullInfo: PlaylistFullInfo): Playlist {
+            return Playlist(
+                id = fullInfo.id,
+                playlistName = fullInfo.playlistName,
+                coverPath = fullInfo.coverPath,
+                description = fullInfo.description,
+                trackIDs = fullInfo.tracks.map { it.trackId }.toMutableList()
+            )
+        }
     }
 }
 
@@ -69,13 +79,14 @@ data class PlaylistFullInfo(
 
     companion object {
         fun fromDB(entity: PlaylistDetails): PlaylistFullInfo {
-
+            var tracks = entity.tracks.toMutableList()
+            tracks.sortWith { t1, t2 -> t2.timestamp.compareTo(t1.timestamp) } // sort descending by time added
             return PlaylistFullInfo(
                 id = entity.playlist.playlistId,
                 playlistName = entity.playlist.playlistName,
                 coverPath = entity.playlist.coverPath,
                 description = entity.playlist.description,
-                tracks = entity.tracks.map { Track.from(it) }
+                tracks = tracks.map { Track.from(it) }
             )
         }
     }

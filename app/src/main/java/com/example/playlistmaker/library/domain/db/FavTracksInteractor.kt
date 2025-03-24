@@ -12,5 +12,7 @@ interface FavTracksInteractor {
     fun getAllTracks(): Flow<List<Track>>
 
     fun getTrackIds(): Flow<List<Int>>
+
+    suspend fun isFavourite(id: Int): Boolean
 }
 

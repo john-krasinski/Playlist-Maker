@@ -39,7 +39,8 @@ class PlaylistDatabaseRepository(private val database: AppDatabase): PlaylistRep
     }
 
     override suspend fun getFullInfoPlaylist(id: Int): PlaylistFullInfo {
-        return PlaylistFullInfo.fromDB(database.playlistsDao().getDetailsForPlaylist(id))
+        val info = database.playlistsDao().getDetailsForPlaylist(id)
+        return PlaylistFullInfo.fromDB(info)
     }
 
 

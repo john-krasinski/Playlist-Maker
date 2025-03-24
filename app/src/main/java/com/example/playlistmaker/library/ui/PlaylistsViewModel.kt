@@ -32,12 +32,6 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor): 
         }
     }
 
-    fun deletePlaylist(playlist: Playlist) {
-        viewModelScope.launch(Dispatchers.IO) {
-            playlistsInteractor.deletePlaylist(playlist)
-        }
-    }
-
     fun updatePlaylist(playlist: Playlist) {
         viewModelScope.launch(Dispatchers.IO) {
             playlistsInteractor.updatePlaylistInfo(playlist)

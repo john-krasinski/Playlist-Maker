@@ -17,6 +17,9 @@ interface FavTrackDao {
     @Query("SELECT * FROM $FAV_TRACKS_TABLE_NAME ")
     suspend fun getAllTracks(): List<FavTrackEntity>
 
-    @Query("SELECT trackId from $FAV_TRACKS_TABLE_NAME ")
+    @Query("SELECT trackId FROM $FAV_TRACKS_TABLE_NAME ")
     suspend fun getTrackIds(): List<Int>
+
+    @Query("SELECT trackId FROM $FAV_TRACKS_TABLE_NAME WHERE trackId = :id")
+    suspend fun findTrackId(id: Int): List<Int>
 }

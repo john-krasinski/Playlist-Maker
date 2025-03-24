@@ -36,7 +36,8 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.audioPlayerFragment2,
                 R.id.newPlaylistCreationFragment,
-                R.id.managePlaylistFragment -> {
+                R.id.managePlaylistFragment,
+                R.id.editPlaylistFragment -> {
                     ui.bottomNav.isVisible = false
                 }
                 else -> {

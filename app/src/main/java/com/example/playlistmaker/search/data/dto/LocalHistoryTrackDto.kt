@@ -5,7 +5,7 @@ data class LocalHistoryTrackDto(
     val trackName: String,
     val artistName: String,
     val albumName: String,
-    val trackTime: String,
+    val trackTimeMillis: Int,
     val artworkUrl: String,
     val country: String,
     val genre: String,

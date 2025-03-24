@@ -45,4 +45,22 @@
     <string name="alreadyInPlaylist">Трек уже добавлен в плейлист %s</string>
     <string name="successAddingToPlaylist">Добавлено в плейлист %s</string>
     <string name="playlistDuration">%$1d %$2s  •  </string>
+    <string name="noTrackInPlaylistForSharing">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <plurals name="playlistDurationMinutes">
+        <item quantity="one">%s минута</item>
+        <item quantity="two">%s минуты</item>
+        <item quantity="few">%s минуты</item>
+        <item quantity="other">%s минут</item>
+    </plurals>
+    <string name="removePlaylistDialogTitle">Удалить плейлист</string>
+    <string name="removePlaylistDialogMessage">Хотите удалить плейлист?</string>
+    <string name="removePlaylistDialogBtnYes">Да</string>
+    <string name="removePlaylistDialogBtnNo">Нет</string>
+    <string name="editPlaylistBtnSave">Сохранить</string>
+    <string name="editPlaylistExitDialogTitle">Завершить редактирование плейлиста?</string>
+    <string name="editPlaylistHeader">Редактировать</string>
+    <string name="removeTrackDialogTitle">Удалить трек</string>
+    <string name="removeTrackDialogMessage">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="removeTrackDialogDeleteBtn">Удалить</string>
+    <string name="removeTrackDialogCancelBtn">Отмена</string>
 </resources>

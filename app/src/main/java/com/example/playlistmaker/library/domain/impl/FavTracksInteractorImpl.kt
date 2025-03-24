@@ -24,4 +24,8 @@ class FavTracksInteractorImpl(
         return repository.getTrackIds()
     }
 
+    override suspend fun isFavourite(id: Int): Boolean {
+        return repository.isFavourite(id)
+    }
+
 }

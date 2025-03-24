@@ -28,7 +28,10 @@ class PlaylistsFragment : Fragment() {
 
     private var playlists = mutableListOf<Playlist>()
     private var onPlaylistClick: (Playlist) -> Unit = { playlist ->
-
+        findNavController().navigate(
+            R.id.managePlaylistFragment,
+            ManagePlaylistFragment.prepareArgs(playlist)
+        )
     }
 
     override fun onCreateView(

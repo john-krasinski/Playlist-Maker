@@ -4,4 +4,5 @@ interface SharingProvider {
     fun shareApp()
     fun contactSupport()
     fun readUserAgreement()
+    fun sharePlaylist(message: String)
 }

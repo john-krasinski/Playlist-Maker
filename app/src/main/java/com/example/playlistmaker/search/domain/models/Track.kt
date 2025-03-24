@@ -12,7 +12,7 @@ data class Track(
     val trackName: String,
     val artistName: String,
     val albumName: String,
-    val trackTime: String,
+    val trackTimeMillis: Int,
     val artworkUrl: String,
     val country: String,
     val genre: String,
@@ -21,18 +21,22 @@ data class Track(
     var isFavourite: Boolean = false
 ) {
 
+    val trackTime get() = SimpleDateFormat("mm:ss",Locale.getDefault())
+        .format(trackTimeMillis)
+
     companion object {
-        
+
         fun from(src: ResponseTrackDto): Track {
             return Track(
                 trackId = src.trackId,
                 trackName = src.trackName,
                 artistName = src.artistName,
                 albumName = src.collectionName,
-                trackTime = SimpleDateFormat(
-                    "mm:ss",
-                    Locale.getDefault()
-                ).format(src.trackTimeMillis),
+                trackTimeMillis = src.trackTimeMillis,
+//                trackTime = SimpleDateFormat(
+//                    "mm:ss",
+//                    Locale.getDefault()
+//                ).format(src.trackTimeMillis),
                 artworkUrl = src.artworkUrl100,
                 country = src.country,
                 genre = src.primaryGenreName,
@@ -45,7 +49,7 @@ data class Track(
             return Track(
                 trackId = src.trackId,
                 trackName = src.trackName,
-                trackTime = src.trackTime,
+                trackTimeMillis = src.trackTimeMillis,
                 artistName = src.artistName,
                 year = src.year,
                 artworkUrl = src.artworkUrl,
@@ -60,7 +64,7 @@ data class Track(
             return Track(
                 trackId = src.trackId,
                 trackName = src.trackName,
-                trackTime = src.trackTime,
+                trackTimeMillis = src.trackTimeMillis,
                 artistName = src.artistName,
                 year = src.year,
                 artworkUrl = src.artworkUrl,
@@ -76,7 +80,7 @@ data class Track(
             return Track(
                 trackId = src.trackId,
                 trackName = src.trackName,
-                trackTime = src.trackTime,
+                trackTimeMillis = src.trackTimeMillis,
                 artistName = src.artistName,
                 year = src.year,
                 artworkUrl = src.artworkUrl,
@@ -93,7 +97,7 @@ data class Track(
         return FavTrackEntity(
             trackId = this.trackId,
             trackName = this.trackName,
-            trackTime = this.trackTime,
+            trackTimeMillis = this.trackTimeMillis,
             artistName = this.artistName,
             year = this.year,
             artworkUrl = this.artworkUrl,
@@ -109,7 +113,7 @@ data class Track(
         return PlaylistedTrackEntity(
             trackId = this.trackId,
             trackName = this.trackName,
-            trackTime = this.trackTime,
+            trackTimeMillis = this.trackTimeMillis,
             artistName = this.artistName,
             year = this.year,
             artworkUrl = this.artworkUrl,
@@ -125,7 +129,7 @@ data class Track(
         return LocalHistoryTrackDto(
             trackId = this.trackId,
             trackName = this.trackName,
-            trackTime = this.trackTime,
+            trackTimeMillis = this.trackTimeMillis,
             artistName = this.artistName,
             year = this.year,
             artworkUrl = this.artworkUrl,

@@ -36,6 +36,13 @@ class PlayerViewModel(
     init {
         preparePlayer(track.previewUrl)
         updatePlaylists()
+        checkIsFavourite()
+    }
+
+    private fun checkIsFavourite() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _isFavourite.postValue(favTracksInteractor.isFavourite(track.trackId))
+        }
     }
 
     fun processLikeClick() {
