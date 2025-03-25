@@ -168,9 +168,8 @@ class ManagePlaylistFragment : Fragment() {
         } else {
             ui.emptyPlaylistMessageGroup.isVisible = false
             tracksBottomSheet.isHideable = false
-            val adapter = ui.createdPlaylistsRecycler.adapter as? TrackAdapter
-            adapter?.updateTracks(playlist.tracks)
-            adapter?.notifyDataSetChanged()
+            (ui.createdPlaylistsRecycler.adapter as? TrackAdapter)?.updateTracks(playlist.tracks)
+            ui.createdPlaylistsRecycler.adapter?.notifyDataSetChanged()
             tracksBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
