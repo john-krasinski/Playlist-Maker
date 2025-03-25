@@ -54,15 +54,12 @@ class EditPlaylistFragment(): NewPlaylistCreationFragment() {
         ui.btnNewPlaylistCreate.text = getString(R.string.editPlaylistBtnSave)
         ui.btnNewPlaylistCreate.setOnClickListener {
             val cover = newPlaylistCover
-            val savedCover = if (cover != null) {
-                savePlaylistCoverImage(cover, newPlaylistName)
-            } else {
-                ""
-            }
             if (playlist != null) {
                 playlist.playlistName = newPlaylistName
                 playlist.description = newPlaylistDescription
-                playlist.coverPath = savedCover
+                if (cover != null) {
+                    playlist.coverPath = savePlaylistCoverImage(cover, newPlaylistName)
+                }
                 viewmodel.updatePlaylist(playlist)
             }
 
