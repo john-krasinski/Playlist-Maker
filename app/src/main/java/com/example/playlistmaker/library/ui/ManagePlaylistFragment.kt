@@ -1,6 +1,5 @@
 package com.example.playlistmaker.library.ui
 
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,7 +18,6 @@ import com.example.playlistmaker.player.ui.AudioPlayerFragment
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.tracks.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -170,8 +168,9 @@ class ManagePlaylistFragment : Fragment() {
         } else {
             ui.emptyPlaylistMessageGroup.isVisible = false
             tracksBottomSheet.isHideable = false
-            (ui.createdPlaylistsRecycler.adapter as TrackAdapter).updateTracks(playlist.tracks)
-            ui.createdPlaylistsRecycler.adapter?.notifyDataSetChanged()
+            val adapter = ui.createdPlaylistsRecycler.adapter as? TrackAdapter
+            adapter?.updateTracks(playlist.tracks)
+            adapter?.notifyDataSetChanged()
             tracksBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
@@ -228,13 +227,13 @@ class ManagePlaylistFragment : Fragment() {
             title = getString(R.string.removeTrackDialogTitle),
             message = getString(R.string.removeTrackDialogMessage)
         ).setPositiveButton(
-            getString(R.string.removeTrackDialogDeleteBtn)
+            getString(R.string.removeTrackDialogBtnYes)
         ) { p0, p1 ->
             viewmodel.removeTrackFromPlaylist(track, playlistId)
             viewmodel.getPlaylistFullInfo(playlistId)
         }
         .setNegativeButton(
-            getString(R.string.removeTrackDialogCancelBtn),
+            getString(R.string.removeTrackDialogBtnNo),
             null
         )
         .show()

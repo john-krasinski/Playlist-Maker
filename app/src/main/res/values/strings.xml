@@ -61,6 +61,7 @@
     <string name="editPlaylistHeader">Редактировать</string>
     <string name="removeTrackDialogTitle">Удалить трек</string>
     <string name="removeTrackDialogMessage">Вы уверены, что хотите удалить трек из плейлиста?</string>
-    <string name="removeTrackDialogDeleteBtn">Удалить</string>
-    <string name="removeTrackDialogCancelBtn">Отмена</string>
+    <string name="removeTrackDialogBtnYes">Да</string>
+    <string name="removeTrackDialogBtnNo">Нет</string>
+    <string name="newPlaylistCreateBtn">Создать</string>
 </resources>
