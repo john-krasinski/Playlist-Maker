@@ -12,14 +12,15 @@ import com.example.playlistmaker.databinding.TrackItemBinding
 import com.example.playlistmaker.search.domain.models.Track
 
 class TrackAdapter(
-    private val tracks: List<Track>,
-    private val onClick: ((Track) -> Unit?)? = null
+    private var tracks: List<Track>,
+    private val onClick: ((Track) -> Unit?)? = null,
+    private val onLongClick: ((Track) -> Unit?)? = null
 ) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = TrackItemBinding.inflate(layoutInflater, parent, false)
-        return TrackViewHolder(binding, onClick)
+        return TrackViewHolder(binding, onClick, onLongClick)
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
@@ -30,7 +31,16 @@ class TrackAdapter(
         return tracks.size
     }
 
-    class TrackViewHolder(val binding: TrackItemBinding, private val onClick: ((Track) -> Unit?)?) : RecyclerView.ViewHolder(binding.root) {
+    fun updateTracks(newList: List<Track>) {
+        tracks = newList
+        notifyDataSetChanged()
+    }
+
+    class TrackViewHolder(
+        val binding: TrackItemBinding,
+        private val onClick: ((Track) -> Unit?)?,
+        private val onLongClick: ((Track) -> Unit?)?
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: Track) {
             Glide.with(binding.foundTrackCover.context)
@@ -44,6 +54,12 @@ class TrackAdapter(
             binding.foundTrackDuration.text = " • " + model.trackTime
             if (onClick != null) {
                 binding.foundTrackItem.setOnClickListener { onClick.invoke(model) }
+            }
+            if (onLongClick != null) {
+                binding.foundTrackItem.setOnLongClickListener {
+                    onLongClick.invoke(model)
+                    true
+                }
             }
         }
     }

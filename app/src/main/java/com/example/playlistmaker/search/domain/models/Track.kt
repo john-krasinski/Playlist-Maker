@@ -2,6 +2,7 @@ package com.example.playlistmaker.search.domain.models
 
 import android.icu.text.SimpleDateFormat
 import com.example.playlistmaker.library.data.db.fav_tracks.FavTrackEntity
+import com.example.playlistmaker.library.data.db.playlists.PlaylistedTrackEntity
 import com.example.playlistmaker.search.data.dto.LocalHistoryTrackDto
 import com.example.playlistmaker.search.data.dto.ResponseTrackDto
 import java.util.Locale
@@ -11,7 +12,7 @@ data class Track(
     val trackName: String,
     val artistName: String,
     val albumName: String,
-    val trackTime: String,
+    val trackTimeMillis: Int,
     val artworkUrl: String,
     val country: String,
     val genre: String,
@@ -20,18 +21,22 @@ data class Track(
     var isFavourite: Boolean = false
 ) {
 
+    val trackTime get() = SimpleDateFormat("mm:ss",Locale.getDefault())
+        .format(trackTimeMillis)
+
     companion object {
-        
+
         fun from(src: ResponseTrackDto): Track {
             return Track(
                 trackId = src.trackId,
                 trackName = src.trackName,
                 artistName = src.artistName,
                 albumName = src.collectionName,
-                trackTime = SimpleDateFormat(
-                    "mm:ss",
-                    Locale.getDefault()
-                ).format(src.trackTimeMillis),
+                trackTimeMillis = src.trackTimeMillis,
+//                trackTime = SimpleDateFormat(
+//                    "mm:ss",
+//                    Locale.getDefault()
+//                ).format(src.trackTimeMillis),
                 artworkUrl = src.artworkUrl100,
                 country = src.country,
                 genre = src.primaryGenreName,
@@ -44,7 +49,7 @@ data class Track(
             return Track(
                 trackId = src.trackId,
                 trackName = src.trackName,
-                trackTime = src.trackTime,
+                trackTimeMillis = src.trackTimeMillis,
                 artistName = src.artistName,
                 year = src.year,
                 artworkUrl = src.artworkUrl,
@@ -59,7 +64,7 @@ data class Track(
             return Track(
                 trackId = src.trackId,
                 trackName = src.trackName,
-                trackTime = src.trackTime,
+                trackTimeMillis = src.trackTimeMillis,
                 artistName = src.artistName,
                 year = src.year,
                 artworkUrl = src.artworkUrl,
@@ -70,13 +75,45 @@ data class Track(
                 isFavourite = true
             )
         }
+
+        fun from(src: PlaylistedTrackEntity): Track {
+            return Track(
+                trackId = src.trackId,
+                trackName = src.trackName,
+                trackTimeMillis = src.trackTimeMillis,
+                artistName = src.artistName,
+                year = src.year,
+                artworkUrl = src.artworkUrl,
+                country = src.country,
+                previewUrl = src.previewUrl,
+                albumName = src.albumName,
+                genre = src.genre,
+                isFavourite = false
+            )
+        }
     }
 
-    fun intoDB(): FavTrackEntity {
+    fun intoFavDB(): FavTrackEntity {
         return FavTrackEntity(
             trackId = this.trackId,
             trackName = this.trackName,
-            trackTime = this.trackTime,
+            trackTimeMillis = this.trackTimeMillis,
+            artistName = this.artistName,
+            year = this.year,
+            artworkUrl = this.artworkUrl,
+            country = this.country,
+            previewUrl = this.previewUrl,
+            albumName = this.albumName,
+            genre = this.genre,
+            timestamp = System.currentTimeMillis()
+        )
+    }
+
+    fun intoPlaylistedDB(): PlaylistedTrackEntity {
+        return PlaylistedTrackEntity(
+            trackId = this.trackId,
+            trackName = this.trackName,
+            trackTimeMillis = this.trackTimeMillis,
             artistName = this.artistName,
             year = this.year,
             artworkUrl = this.artworkUrl,
@@ -92,7 +129,7 @@ data class Track(
         return LocalHistoryTrackDto(
             trackId = this.trackId,
             trackName = this.trackName,
-            trackTime = this.trackTime,
+            trackTimeMillis = this.trackTimeMillis,
             artistName = this.artistName,
             year = this.year,
             artworkUrl = this.artworkUrl,

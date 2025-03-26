@@ -13,40 +13,41 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistCreationBinding
+import com.example.playlistmaker.library.domain.models.Playlist
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
 
-class NewPlaylistCreationFragment : Fragment() {
+open class NewPlaylistCreationFragment : Fragment() {
 
-    private val viewmodel: PlaylistsViewModel by viewModel<PlaylistsViewModel>()
+    protected val viewmodel: PlaylistsViewModel by viewModel<PlaylistsViewModel>()
 
-    private var _ui: FragmentNewPlaylistCreationBinding? = null
-    private val ui get() = _ui!!
+    protected var _ui: FragmentNewPlaylistCreationBinding? = null
+    protected val ui get() = _ui!!
 
-    private var playlistCover: Uri? = null
-    private var playlistName: String = ""
-    private var playlistDescription: String = ""
+    protected var newPlaylistCover: Uri? = null
+    protected var newPlaylistName: String = ""
+    protected var newPlaylistDescription: String = ""
 
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
+    protected open val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            exitConfirmDialog()
+            exitConfirmDialog(getString(R.string.playlistCreationExitDialogTitle))
         }
     }
 
-    private val playlistCoverChooser =
+    protected val playlistCoverChooser =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 ui.newPlaylistImage.setImageURI(uri)
-                playlistCover = uri
+                newPlaylistCover = uri
             }
         }
 
@@ -62,23 +63,23 @@ class NewPlaylistCreationFragment : Fragment() {
 
         ui.btnNewPlaylistCreate.isEnabled = false
         ui.btnNewPlaylistCreate.setOnClickListener {
-            val cover = playlistCover
+            val cover = newPlaylistCover
             if (cover != null) {
-                val savedCover = savePlaylistCoverImage(cover, playlistName)
-                viewmodel.createPlaylist(playlistName, playlistDescription, savedCover)
+                val savedCover = savePlaylistCoverImage(cover, newPlaylistName)
+                viewmodel.createPlaylist(newPlaylistName, newPlaylistDescription, savedCover)
             } else {
-                viewmodel.createPlaylist(playlistName, playlistDescription, "")
+                viewmodel.createPlaylist(newPlaylistName, newPlaylistDescription, "")
             }
 
             findNavController().popBackStack()
         }
 
         ui.newPlaylistHeader.setOnClickListener {
-            exitConfirmDialog()
+            exitConfirmDialog(getString(R.string.playlistCreationExitDialogTitle))
         }
 
         ui.newPlaylistName.doOnTextChanged { text, start, before, count ->
-            playlistName = text?.toString() ?: ""
+            newPlaylistName = text?.toString() ?: ""
             if (text?.isNotEmpty() ?: false) {
                 ui.btnNewPlaylistCreate.isEnabled = true
             } else {
@@ -86,7 +87,7 @@ class NewPlaylistCreationFragment : Fragment() {
             }
         }
         ui.newPlaylistDescription.doOnTextChanged { text, start, before, count ->
-            playlistDescription = text?.toString() ?: ""
+            newPlaylistDescription = text?.toString() ?: ""
         }
 
         return ui.root
@@ -99,8 +100,8 @@ class NewPlaylistCreationFragment : Fragment() {
             .addCallback(viewLifecycleOwner, backPressedCallback)
     }
 
-    private fun exitConfirmDialog() {
-        if (playlistCover != null || playlistName.isNotEmpty() || playlistDescription.isNotEmpty()) {
+    protected fun exitConfirmDialog(title: String) {
+        if (newPlaylistCover != null || newPlaylistName.isNotEmpty() || newPlaylistDescription.isNotEmpty()) {
             ui.dialogBackLayer.isVisible = true
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.playlistCreationExitDialogTitle))
@@ -121,7 +122,7 @@ class NewPlaylistCreationFragment : Fragment() {
     }
 
 
-    private fun savePlaylistCoverImage(uri: Uri, name: String): String {
+    protected fun savePlaylistCoverImage(uri: Uri, name: String): String {
 
         val filePath = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlist_covers")
         if (!filePath.exists()){

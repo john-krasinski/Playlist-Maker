@@ -11,11 +11,11 @@ class FavTracksDatabaseRepository(
 ): FavTracksRepository {
 
     override suspend fun insertTrack(track: Track) {
-        database.favouriteTrackDao().insertTrack(track.intoDB())
+        database.favouriteTrackDao().insertTrack(track.intoFavDB())
     }
 
     override suspend fun deleteTrack(track: Track) {
-        database.favouriteTrackDao().deleteTrack(track.intoDB())
+        database.favouriteTrackDao().deleteTrack(track.intoFavDB())
     }
 
     override fun getAllTracks(): Flow<List<Track>> = flow {
@@ -26,6 +26,11 @@ class FavTracksDatabaseRepository(
 
     override fun getTrackIds(): Flow<List<Int>> = flow {
         emit(database.favouriteTrackDao().getTrackIds())
+    }
+
+    override suspend fun isFavourite(id: Int): Boolean {
+        val ids = database.favouriteTrackDao().findTrackId(id)
+        return ids.isNotEmpty()
     }
 
 }

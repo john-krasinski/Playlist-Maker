@@ -241,11 +241,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun reDrawHistory() {
-        ui.searchRecycler.adapter?.notifyDataSetChanged()
+        ui.searchRecycler.adapter = TrackAdapter(historyTracks, onTrackClick)
     }
 
     private fun openTrackInPlayer(track: Track) {
-        track.isFavourite = searchTracksViewModel.isTrackFavourite(track)
         findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment22, AudioPlayerFragment.createArgs(track))
     }
 

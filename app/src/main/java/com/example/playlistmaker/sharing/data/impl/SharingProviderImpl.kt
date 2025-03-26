@@ -40,4 +40,16 @@ class SharingProviderImpl(private val context: Context): SharingProvider {
         }
         context.startActivity(sendIntent)
     }
+
+    override fun sharePlaylist(message: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(shareIntent)
+    }
 }

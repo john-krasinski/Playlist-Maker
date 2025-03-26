@@ -28,6 +28,10 @@ class FavouriteTracksFragment : Fragment() {
 
     private var favTracks: MutableList<Track> = mutableListOf()
 
+    private val onTrackClick = { clickedTrack: Track ->
+        openTrackInPlayer(clickedTrack)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,9 +40,7 @@ class FavouriteTracksFragment : Fragment() {
         _ui = FragmentFavouritesBinding.inflate(inflater, container, false)
 
         ui.favTracksRecycler.layoutManager = LinearLayoutManager(requireContext())
-        ui.favTracksRecycler.adapter = TrackAdapter(favTracks) { clickedTrack ->
-            openTrackInPlayer(clickedTrack)
-        }
+        ui.favTracksRecycler.adapter = TrackAdapter(favTracks, onTrackClick)
 
         viewModel.favTracks.observe(viewLifecycleOwner) { state ->
             when (state) {

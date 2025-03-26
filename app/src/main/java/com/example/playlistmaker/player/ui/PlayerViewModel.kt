@@ -4,10 +4,7 @@ import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.library.domain.db.FavTracksInteractor
 import com.example.playlistmaker.library.domain.db.PlaylistsInteractor
 import com.example.playlistmaker.library.domain.models.Playlist
@@ -39,6 +36,13 @@ class PlayerViewModel(
     init {
         preparePlayer(track.previewUrl)
         updatePlaylists()
+        checkIsFavourite()
+    }
+
+    private fun checkIsFavourite() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _isFavourite.postValue(favTracksInteractor.isFavourite(track.trackId))
+        }
     }
 
     fun processLikeClick() {
@@ -95,7 +99,7 @@ class PlayerViewModel(
     fun addToPlaylist(playlist: Playlist) {
         viewModelScope.launch(Dispatchers.IO) {
             playlist.addTrack(track)
-            playlistsInteractor.updatePlaylist(playlist)
+            playlistsInteractor.addTrackToPlaylist(track, playlist.id)
         }
     }
 

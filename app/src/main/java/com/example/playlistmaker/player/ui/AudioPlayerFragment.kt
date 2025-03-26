@@ -60,7 +60,7 @@ class AudioPlayerFragment : Fragment() {
                 RELEASE_YEAR_KEY to track.year,
                 GENRE_KEY to track.genre,
                 COUNTRY_KEY to track.country,
-                TRACK_DURATION_KEY to track.trackTime,
+                TRACK_DURATION_KEY to track.trackTimeMillis,
                 ARTWORK_URL_KEY to track.artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),
                 PREVIEW_URL_KEY to track.previewUrl,
                 IS_FAVOURITE_TRACK_KEY to track.isFavourite
@@ -171,7 +171,7 @@ class AudioPlayerFragment : Fragment() {
 
         ui.newPlaylistBtn.setOnClickListener {
             hideBottomSheet = false
-            findNavController().navigate(R.id.newPlaylistCreationFragment)
+            findNavController().navigate(R.id.action_audioPlayerFragment2_to_newPlaylistCreationFragment)
         }
 
         bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -266,11 +266,11 @@ class AudioPlayerFragment : Fragment() {
         val year = arguments?.getString(RELEASE_YEAR_KEY) ?: unknown
         val genre = arguments?.getString(GENRE_KEY) ?: unknown
         val country = arguments?.getString(COUNTRY_KEY) ?: unknown
-        val trackTime = arguments?.getString(TRACK_DURATION_KEY) ?: unknown
+        val trackTimeMillis = arguments?.getInt(TRACK_DURATION_KEY) ?: -1
         val artworkUrl = arguments?.getString(ARTWORK_URL_KEY) ?: ""
         val previewUrl = arguments?.getString(PREVIEW_URL_KEY) ?: ""
         val isFavourite = arguments?.getBoolean(IS_FAVOURITE_TRACK_KEY) ?: false
 
-        currentTrack = Track(trackId,trackName,artistName,albumName,trackTime,artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),country,genre,year,previewUrl,isFavourite)
+        currentTrack = Track(trackId,trackName,artistName,albumName,trackTimeMillis,artworkUrl.replaceAfterLast('/',"512x512bb.jpg"),country,genre,year,previewUrl,isFavourite)
     }
 }
